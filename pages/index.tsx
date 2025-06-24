@@ -1,6 +1,6 @@
 
 export default function Home() {
   return (
-    div>
+    <div>Pixel Sinav</div>
   );
 }

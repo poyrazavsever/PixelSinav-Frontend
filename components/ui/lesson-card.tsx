@@ -1,5 +1,4 @@
-import Image from "next/image";
-import { Button } from "./button";
+import Link from "next/link";
 
 interface LessonCardProps {
   image: string;
@@ -11,60 +10,44 @@ interface LessonCardProps {
 
 const LessonCard = ({ image, category, title, slug, badges }: LessonCardProps) => {
   return (
-    <div className="bg-gray-800/10 rounded-xl border border-gray-800 overflow-hidden transition-all duration-300 hover:border-orange-primary/50 group">
+    <Link 
+      href={`/dersler/${slug}`} 
+      className="block bg-gray/30 rounded-xl border border-gray overflow-hidden transition-all duration-300 hover:border-[#D65A31]/50 group"
+    >
       {/* Card Image */}
-      <div className="relative w-full aspect-[16/9] rounded-t-xl overflow-hidden">
-        <Image
+      <div className="p-2 relative w-full aspect-[16/9] overflow-hidden">
+        <img
           src={image}
           alt={title}
-          fill
-          className="object-cover"
+          className="object-cover w-full h-full rounded-xl"
         />
       </div>
 
       {/* Card Content */}
       <div className="p-6">
         {/* Category */}
-        <p className="text-gray-400 font-nunito mb-2">
+        <p className="text-text font-nunito mb-2">
           {category}
         </p>
 
         {/* Title */}
-        <h3 className="text-white font-pixelify text-2xl mb-4">
+        <h3 className="text-white font-nunito text-xl mb-4">
           {title}
         </h3>
 
-        {/* Badges */}
-        <div className="flex flex-wrap gap-2 mb-6">
+        {/* Categories */}
+        <div className="flex flex-wrap gap-2">
           {badges.map((badge, index) => (
             <span
               key={index}
-              className="px-3 py-1 bg-gray-800/30 text-orange-primary text-sm font-nunito rounded-full"
+              className="px-4 py-2 rounded-full bg-[#D65A31] text-white text-sm font-nunito border border-[#F08967]"
             >
               {badge}
             </span>
           ))}
         </div>
-
-        {/* Action Buttons */}
-        <div className="flex gap-3">
-          <Button
-            variant="filled"
-            href={`/dersler/${slug}`}
-            className="flex-1"
-          >
-            Başlangıç
-          </Button>
-          <Button
-            variant="outline"
-            href={`/dersler/${slug}/detay`}
-            className="flex-1"
-          >
-            MAT 101 Bağıl
-          </Button>
-        </div>
       </div>
-    </div>
+    </Link>
   );
 };
 

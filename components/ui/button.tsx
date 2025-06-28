@@ -12,7 +12,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const buttonVariants = {
-  filled: "bg-orange-primary text-white",
+  filled: "bg-orange-primary text-white border-2 border-orange-primary",
   outline: "bg-transparent border-dashed border-2 border-orange-light text-orange-light",
 };
 

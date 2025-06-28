@@ -2,6 +2,7 @@ import React from 'react'
 import { Toaster } from 'react-hot-toast'
 import Navbar from './navbar'
 import Footer from './footer'
+import TopSection from './topSection'
 
 type LayoutProps = {
   children: React.ReactNode
@@ -9,20 +10,26 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className='max-w-7xl container mx-auto min-h-screen flex flex-col justify-between'>
+    <>
 
-      <Toaster position="top-right" reverseOrder={false} />
+      <TopSection />
+    
+    
+      <div className='max-w-7xl container mx-auto min-h-screen flex flex-col justify-between'>
 
-      <Navbar />
+        <Toaster position="top-right" reverseOrder={false} />
 
-      <main className="flex-grow">
-        {children}
-      </main>
+        <Navbar />
 
-      <Footer />
+        <main className="flex-grow">
+          {children}
+        </main>
+
+        <Footer />
 
 
-    </div>
+      </div>
+    </>
   )
 }
 

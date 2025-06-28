@@ -3,14 +3,14 @@ import { Button } from "../ui/button";
 
 const CTASection = () => {
   return (
-    <section className="bg-gray py-24 relative">
+    <section className="bg-gray pt-4 relative">
       {/* Dots Pattern Background */}
       <div className="absolute inset-0" style={{
         backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px)',
         backgroundSize: '24px 24px'
       }} />
 
-      <div className="max-w-7xl container mx-auto px-4">
+      <div className="max-w-7xl container mx-auto">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12">
           {/* Left Content */}
           <div className="flex-1 text-center lg:text-left relative z-10">

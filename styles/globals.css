@@ -1,1 +1,17 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap');
 @import "tailwindcss";
+
+@theme {
+    /* Colors */
+    --color-background:#373737;
+    --color-gray:#27292B;
+    --color-orange-primary: #D65A31;
+    --color-orange-light: #F08967;
+    --color-white: #EEEEEE;
+    --color-text: #DDDDDD;
+
+    /* Fonts*/
+    --font-nunito: 'Nunito Sans', sans-serif;
+    --font-pixelify: 'Pixelify Sans', sans-serif;
+}

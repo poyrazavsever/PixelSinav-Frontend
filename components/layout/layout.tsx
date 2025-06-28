@@ -9,7 +9,7 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <div className='min-h-screen flex flex-col justify-between'>
+    <div className='max-w-7xl container mx-auto min-h-screen flex flex-col justify-between'>
 
       <Toaster position="top-right" reverseOrder={false} />
 

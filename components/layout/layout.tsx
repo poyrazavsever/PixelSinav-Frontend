@@ -10,26 +10,22 @@ type LayoutProps = {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <>
+    <div className='min-h-screen flex flex-col justify-between'>
 
       <TopSection />
-    
-    
-      <div className='max-w-7xl container mx-auto min-h-screen flex flex-col justify-between'>
 
-        <Toaster position="top-right" reverseOrder={false} />
+      <Toaster position="top-right" reverseOrder={false} />
 
-        <Navbar />
+      <Navbar />
 
-        <main className="flex-grow">
-          {children}
-        </main>
+      <main className="flex-grow">
+        {children}
+      </main>
 
-        <Footer />
+      <Footer />
 
 
-      </div>
-    </>
+    </div>
   )
 }
 

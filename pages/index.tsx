@@ -1,6 +1,10 @@
 
+import HeroSection from "@/components/shared/hero-section";
+
 export default function Home() {
   return (
-    <div>Pixel Sinav</div>
+    <main>
+      <HeroSection />
+    </main>
   );
 }

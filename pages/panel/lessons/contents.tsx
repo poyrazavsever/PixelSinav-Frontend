@@ -3,6 +3,11 @@ import { Icon } from '@iconify/react'
 import type { NextPage } from 'next'
 import { Button } from '@/components/ui/button'
 import ReactMarkdown from 'react-markdown'
+import dynamic from 'next/dynamic'
+import 'easymde/dist/easymde.min.css'
+import type { Options } from 'easymde'
+
+const SimpleMdeEditor = dynamic(() => import('react-simplemde-editor'), { ssr: false })
 
 interface SectionContent {
     id: string
@@ -104,6 +109,54 @@ const LessonContents: NextPage = () => {
         return sectionContents.find(sc => sc.id === sectionId)?.content || ''
     }
 
+    const editorOptions: Options = {
+        spellChecker: false,
+        autofocus: true,
+        status: ['lines', 'words'],
+        toolbar: ['bold', 'italic', 'strikethrough', '|',
+            'heading-1', 'heading-2', 'heading-3', '|',
+            'unordered-list', 'ordered-list', '|',
+            'link', 'image', 'table', 'code', 'quote', '|',
+            'preview', 'side-by-side', 'fullscreen', '|',
+            'guide'] as Options['toolbar'],
+        placeholder: `# Ders İçeriği
+
+## Giriş
+Dersin giriş bölümünü buraya yazın...
+
+## Ana Konu
+Ana içeriği buraya yazın...
+
+## Örnekler
+- Örnek 1
+- Örnek 2
+
+## Alıştırmalar
+1. İlk alıştırma
+2. İkinci alıştırma
+
+## Özet
+Dersin özetini buraya yazın...`,
+        minHeight: '300px',
+        maxHeight: '500px',
+        renderingConfig: {
+            singleLineBreaks: false,
+            codeSyntaxHighlighting: true,
+        },
+        previewRender: (plainText: string) => {
+            return plainText // Ham metni döndür, markdown işaretlerini gizle
+        },
+        indentWithTabs: false,
+        tabSize: 4,
+        lineWrapping: true,
+        inputStyle: 'contenteditable',
+        autosave: {
+            enabled: true,
+            delay: 1000,
+            uniqueId: `section-${selectedSection}`,
+        }
+    }
+
     return (
         <>
             <h1 className="font-pixelify text-4xl mb-8">
@@ -126,8 +179,8 @@ const LessonContents: NextPage = () => {
                                 </span>
                                 <div className="flex items-center gap-2">
                                     <span className={`px-2 py-1 text-xs rounded ${lesson.status === 'published'
-                                            ? 'bg-green-500/20 text-green-500'
-                                            : 'bg-yellow-500/20 text-yellow-500'
+                                        ? 'bg-green-500/20 text-green-500'
+                                        : 'bg-yellow-500/20 text-yellow-500'
                                         }`}>
                                         {lesson.status === 'published' ? 'Yayında' : 'Taslak'}
                                     </span>
@@ -259,33 +312,11 @@ const LessonContents: NextPage = () => {
                                         Markdown Rehberi
                                     </a>
                                 </div>
-                                <textarea
+                                <SimpleMdeEditor
                                     value={editContent}
-                                    onChange={(e) => setEditContent(e.target.value)}
-                                    rows={15}
-                                    className="w-full px-4 py-3 bg-dark border border-neutral-600 text-white font-nunito
-                                    placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none
-                                    resize-none rounded-lg"
-                                    placeholder="# Başlık
-## Alt Başlık
-
-Normal paragraf metni.
-
-**Kalın metin** ve *italik metin*.
-
-- Liste öğesi 1
-- Liste öğesi 2
-
-1. Numaralı liste
-2. İkinci öğe
-
-> Alıntı metni
-
-`kod örneği`
-
-[Link](https://example.com)
-
-![Resim açıklaması](resim-url)"
+                                    onChange={setEditContent}
+                                    options={editorOptions}
+                                    className="markdown-editor"
                                 />
                             </div>
 

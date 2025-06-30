@@ -345,3 +345,101 @@
     .md-content blockquote { padding: 0.75em 1em; }
     .md-content table { font-size: 0.9em; }
 }
+
+/* SimpleMDE Editor Custom Styles */
+.markdown-editor .EasyMDEContainer {
+    background-color: var(--color-gray);
+}
+
+.markdown-editor .EasyMDEContainer .CodeMirror {
+    background-color: var(--color-gray);
+    color: var(--color-text);
+    border-color: #4B5563;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    font-family: var(--font-nunito);
+    caret-color: var(--color-orange-light);
+}
+
+.markdown-editor .EasyMDEContainer .CodeMirror-cursor {
+    border-color: var(--color-orange-light);
+}
+
+.markdown-editor .EasyMDEContainer .editor-toolbar {
+    background-color: var(--color-gray);
+    border-color: #4B5563;
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
+    opacity: 1 !important;
+}
+
+.markdown-editor .EasyMDEContainer .editor-toolbar button {
+    color: var(--color-text) !important;
+    opacity: 0.8 !important;
+}
+
+.markdown-editor .EasyMDEContainer .editor-toolbar button:hover, 
+.markdown-editor .EasyMDEContainer .editor-toolbar button.active {
+    background-color: #4B5563;
+    border-color: #6B7280;
+    opacity: 1 !important;
+}
+
+.markdown-editor .EasyMDEContainer .editor-toolbar i.separator {
+    border-color: #4B5563;
+}
+
+.markdown-editor .EasyMDEContainer .CodeMirror-line {
+    line-height: 1.75;
+}
+
+/* Hide markdown symbols in the editor */
+.markdown-editor .EasyMDEContainer .cm-header,
+.markdown-editor .EasyMDEContainer .cm-formatting-header,
+.markdown-editor .EasyMDEContainer .cm-formatting-list,
+.markdown-editor .EasyMDEContainer .cm-formatting-quote,
+.markdown-editor .EasyMDEContainer .cm-formatting-strong,
+.markdown-editor .EasyMDEContainer .cm-formatting-em {
+    color: transparent;
+    font-size: 0;
+}
+
+/* Show the actual content with proper styling */
+.markdown-editor .EasyMDEContainer .cm-header-1 {
+    font-size: 2em;
+    color: var(--color-orange-light);
+    font-family: var(--font-pixelify);
+}
+
+.markdown-editor .EasyMDEContainer .cm-header-2 {
+    font-size: 1.5em;
+    color: var(--color-orange-light);
+    font-family: var(--font-pixelify);
+}
+
+.markdown-editor .EasyMDEContainer .cm-header-3 {
+    font-size: 1.25em;
+    color: var(--color-orange-light);
+    font-family: var(--font-pixelify);
+}
+
+.markdown-editor .EasyMDEContainer .cm-strong {
+    color: var(--color-orange-light);
+    font-weight: bold;
+}
+
+.markdown-editor .EasyMDEContainer .cm-em {
+    font-style: italic;
+    color: var(--color-text);
+}
+
+.markdown-editor .EasyMDEContainer .cm-link,
+.markdown-editor .EasyMDEContainer .cm-url {
+    color: var(--color-orange-light);
+    text-decoration: underline;
+}
+
+/* Fix cursor and content alignment */
+.markdown-editor .EasyMDEContainer .CodeMirror-lines {
+    padding: 8px 0;
+}

@@ -72,11 +72,11 @@ const Learn = () => {
                             type="text"
                             placeholder="Ders Ara"
                             className="w-full md:w-[300px] px-4 py-3 bg-dark-800 border border-gray text-white font-nunito transition-all duration-300
-                            placeholder:text-gray/50 focus:border-[#D65A31] focus:ring-1 focus:ring-[#D65A31] focus:outline-none"
+                            placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
                         />
                         <Icon
                             icon="pixelarticons:search"
-                            className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray"
+                            className="absolute right-4 top-1/2 -translate-y-1/2 w-5 h-5 text-neutral-400"
                         />
                     </div>
                     <div className="flex gap-4 w-full md:w-auto">
@@ -85,7 +85,7 @@ const Learn = () => {
                             <button
                                 onClick={() => setIsFilterOpen(!isFilterOpen)}
                                 className="w-full md:w-[200px] px-4 py-3 bg-dark-800 border border-gray text-left text-white font-nunito flex items-center justify-between
-                                hover:border-[#D65A31] transition-all duration-300"
+                                hover:border-orange-primary transition-all duration-300"
                             >
                                 <span className="block truncate">
                                     {selectedFilter || 'Kategorilere Göre Filtrele'}
@@ -101,7 +101,7 @@ const Learn = () => {
                                         initial={{ opacity: 0, y: -20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20 }}
-                                        className="absolute z-10 w-full mt-2 bg-dark-800 border border-gray"
+                                        className="absolute z-10 w-full mt-2 bg-dark-800 border border-gray bg-background"
                                     >
                                         {['Matematik', 'Fizik'].map((item) => (
                                             <button
@@ -110,7 +110,7 @@ const Learn = () => {
                                                     setSelectedFilter(item)
                                                     setIsFilterOpen(false)
                                                 }}
-                                                className="w-full px-4 py-3 text-left text-white hover:bg-[#D65A31]/10 transition-colors"
+                                                className="w-full px-4 py-3 text-left text-white hover:bg-orange-primary/10 transition-colors"
                                             >
                                                 {item}
                                             </button>
@@ -125,7 +125,7 @@ const Learn = () => {
                             <button
                                 onClick={() => setIsEvalOpen(!isEvalOpen)}
                                 className="w-full md:w-[200px] px-4 py-3 bg-dark-800 border border-gray text-left text-white font-nunito flex items-center justify-between
-                                hover:border-[#D65A31] transition-all duration-300"
+                                hover:border-orange-primary transition-all duration-300"
                             >
                                 <span className="block truncate">
                                     {selectedEval || 'Değerlendirme'}
@@ -141,7 +141,7 @@ const Learn = () => {
                                         initial={{ opacity: 0, y: -20 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         exit={{ opacity: 0, y: -20 }}
-                                        className="absolute z-10 w-full mt-2 bg-dark-800 border border-gray"
+                                        className="absolute z-10 w-full mt-2 bg-dark-800 border border-gray bg-background"
                                     >
                                         {[
                                             { label: 'Başlangıç', value: 'beginner' },
@@ -154,7 +154,7 @@ const Learn = () => {
                                                     setSelectedEval(item.label)
                                                     setIsEvalOpen(false)
                                                 }}
-                                                className="w-full px-4 py-3 text-left text-white hover:bg-[#D65A31]/10 transition-colors"
+                                                className="w-full px-4 py-3 text-left text-white hover:bg-orange-primary/10 transition-colors"
                                             >
                                                 {item.label}
                                             </button>

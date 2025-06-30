@@ -17,7 +17,8 @@ const navItems: NavItem[] = [
     href: '/panel/lessons',
     subItems: [
       { label: 'Ders Ekle', href: '/panel/lessons/add' },
-      { label: 'Dersleri Yönet', href: '/panel/lessons/manage' }
+      { label: 'Dersleri Yönet', href: '/panel/lessons/manage' },
+      { label: 'Ders İçerikleri', href: '/panel/lessons/contents' }
     ]
   },
   {

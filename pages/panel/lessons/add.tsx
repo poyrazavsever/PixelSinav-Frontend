@@ -1,6 +1,14 @@
 import React from 'react'
 import { Icon } from '@iconify/react'
 import type { NextPage } from 'next'
+import { Button } from '@/components/ui/button'
+
+interface Section {
+    id: string
+    title: string
+    description: string
+    xpPoints: number
+}
 
 interface LessonFormData {
     title: string
@@ -8,12 +16,58 @@ interface LessonFormData {
     description: string
     difficulty: string
     image: File | null
-    content: string
+    sections: Section[]
 }
+
+const MAX_TOTAL_XP = 5000;
 
 const AddLesson: NextPage = () => {
     const [dragActive, setDragActive] = React.useState(false)
     const [selectedImage, setSelectedImage] = React.useState<string | null>(null)
+    const [sections, setSections] = React.useState<Section[]>([])
+
+    const totalXP = sections.reduce((sum, section) => sum + section.xpPoints, 0)
+    const remainingXP = MAX_TOTAL_XP - totalXP
+
+    const addSection = () => {
+        const newSection: Section = {
+            id: Date.now().toString(),
+            title: '',
+            description: '',
+            xpPoints: Math.min(1000, remainingXP)
+        }
+        setSections([...sections, newSection])
+    }
+
+    const removeSection = (id: string) => {
+        setSections(sections.filter(section => section.id !== id))
+    }
+
+    const updateSection = (id: string, field: keyof Section, value: string | number) => {
+        if (field === 'xpPoints') {
+            const numValue = typeof value === 'string' ? parseInt(value) : value;
+            const otherSectionsXP = sections.reduce((sum, section) =>
+                section.id !== id ? sum + section.xpPoints : sum, 0);
+
+            if (otherSectionsXP + numValue > MAX_TOTAL_XP) {
+                return; // XP limitini aşıyorsa güncelleme yapma
+            }
+        }
+
+        setSections(sections.map(section =>
+            section.id === id ? { ...section, [field]: value } : section
+        ));
+    }
+
+    const handleSectionDragEnd = (result: any) => {
+        if (!result.destination) return
+
+        const items = Array.from(sections)
+        const [reorderedItem] = items.splice(result.source.index, 1)
+        items.splice(result.destination.index, 0, reorderedItem)
+
+        setSections(items)
+    }
 
     const handleDrag = (e: React.DragEvent) => {
         e.preventDefault()
@@ -178,33 +232,128 @@ const AddLesson: NextPage = () => {
                     />
                 </div>
 
-                {/* İçerik */}
+                {/* Bölümler */}
                 <div className="bg-dark-800 border border-neutral-600 p-6 mb-8">
-                    <label className="block font-nunito text-white mb-2">
-                        Ders İçeriği
-                    </label>
-                    <textarea
-                        rows={8}
-                        placeholder="Dersin detaylı içeriğini yazın..."
-                        className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
-            placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
-                    />
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                        <div>
+                            <label className="block font-nunito text-white text-lg mb-1">
+                                Ders Bölümleri
+                            </label>
+                            <div className="flex items-center gap-2 text-sm">
+                                <div className="px-3 py-1 bg-dark border border-neutral-600">
+                                    <span className="font-pixelify text-neutral-400">Toplam XP:</span>
+                                    <span className="font-nunito text-orange-light ml-2">{totalXP}</span>
+                                </div>
+                                <div className="px-3 py-1 bg-dark border border-neutral-600">
+                                    <span className="font-pixelify text-neutral-400">Kalan XP:</span>
+                                    <span className={`font-nunito ml-2 ${remainingXP < 0 ? 'text-red-500' : 'text-green-500'}`}>
+                                        {remainingXP}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <Button
+                            icon='pixelarticons:plus'
+                            onClick={(e) => {
+                                e.preventDefault();
+                                addSection();
+                            }}
+                            disabled={remainingXP <= 0 ? true : false}
+                            type="button"
+                        >
+                            Yeni Bölüm
+                        </Button>
+                    </div>
+
+                    <div className="space-y-4">
+                        {sections.map((section, index) => (
+                            <div
+                                key={section.id}
+                                className="bg-dark border border-neutral-600 p-4"
+                            >
+                                <div className="flex items-center justify-between mb-4">
+                                    <div className="flex items-center gap-3">
+                                        <Icon
+                                            icon="pixelarticons:drag"
+                                            className="w-5 h-5 text-neutral-400 cursor-move"
+                                        />
+                                        <span className="font-pixelify text-orange-light">
+                                            BÖLÜM {index + 1}
+                                        </span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex items-center gap-2 bg-dark-800 px-3 py-1 border border-neutral-600 bg-gray">
+                                            <input
+                                                type="text"
+                                                value={section.xpPoints}
+                                                onChange={(e) => updateSection(section.id, 'xpPoints', parseInt(e.target.value))}
+                                                className="w-12 bg-transparent border-none text-white font-nunito focus:outline-none text-right"
+                                            />
+                                            <span className="text-orange-light font-pixelify text-sm">XP</span>
+                                        </div>
+                                        <button
+                                            type="button"
+                                            onClick={() => removeSection(section.id)}
+                                            className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
+                                        >
+                                            <Icon icon="pixelarticons:close" className="w-5 h-5" />
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-4">
+                                    <div>
+                                        <input
+                                            type="text"
+                                            value={section.title}
+                                            onChange={(e) => updateSection(section.id, 'title', e.target.value)}
+                                            placeholder="Bölüm Başlığı"
+                                            className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
+                                            placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <textarea
+                                            value={section.description}
+                                            onChange={(e) => updateSection(section.id, 'description', e.target.value)}
+                                            placeholder="Bölüm hakkında kısa bir açıklama yazın..."
+                                            rows={2}
+                                            className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
+                                            placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+
+                        {sections.length === 0 && (
+                            <div className="text-center py-8 border-2 border-dashed border-neutral-600">
+                                <Icon
+                                    icon="pixelarticons:file-plus"
+                                    className="w-12 h-12 mx-auto text-neutral-400 mb-2"
+                                />
+                                <p className="text-neutral-400 font-nunito">
+                                    Henüz bölüm eklenmemiş. Yeni bir bölüm eklemek için yukarıdaki butonu kullanın.
+                                </p>
+                            </div>
+                        )}
+                    </div>
                 </div>
 
                 {/* Submit Button */}
                 <div className="flex justify-end gap-4">
-                    <button
+                    <Button
+                        variant='outline'
                         type="button"
-                        className="px-6 py-3 border border-neutral-600 bg-gray text-white font-nunito hover:bg-gray/10 transition-colors"
+                        onClick={(e) => {
+                            e.preventDefault();
+                        }}
                     >
                         İptal
-                    </button>
-                    <button
-                        type="submit"
-                        className="px-6 py-3 bg-orange-primary text-white font-nunito hover:bg-orange-primary/90 transition-colors"
-                    >
+                    </Button>
+                    <Button type="submit">
                         Dersi Yayınla
-                    </button>
+                    </Button>
                 </div>
             </form>
         </>

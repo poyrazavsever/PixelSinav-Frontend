@@ -9,6 +9,9 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   href?: string;
   icon?: string;
   className?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
 const buttonVariants = {
@@ -44,9 +47,15 @@ export const Button = ({
   const baseStyles = `
     flex items-center justify-center gap-2 
     px-8 py-2 font-pixelify
-    font-medium transition-all 
-    disabled:opacity-50 disabled:cursor-not-allowed
+    font-medium transition-all cursor-pointer
   `;
+
+  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (props.type !== 'submit' && props.onClick) {
+      e.preventDefault();
+      props.onClick(e);
+    }
+  };
 
   const buttonContent = (
     <motion.div
@@ -70,7 +79,13 @@ export const Button = ({
   }
 
   return (
-    <button {...props} className="inline-block">
+    <button
+      {...props}
+      type={props.type || 'button'}
+      onClick={handleClick}
+      className="inline-block disabled:opacity-50"
+      disabled={props.disabled}
+    >
       {buttonContent}
     </button>
   );

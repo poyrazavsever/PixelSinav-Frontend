@@ -114,56 +114,55 @@ const LessonContents: NextPage = () => {
             {!selectedLesson ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {lessons.map((lesson) => (
-                    <div
-                        key={lesson.id}
-                        onClick={() => setSelectedLesson(lesson)}
-                        className="bg-dark-800 border border-neutral-600 p-6 rounded-lg hover:border-orange-primary/50 transition-colors cursor-pointer group"
-                    >
-                        <div className="flex items-center justify-between mb-4">
-                            <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm rounded">
-                                <span className="text-neutral-400">ID: </span>
-                                <span className="text-orange-light">#{lesson.id}</span>
-                            </span>
-                            <div className="flex items-center gap-2">
-                                <span className={`px-2 py-1 text-xs rounded ${
-                                    lesson.status === 'published'
-                                        ? 'bg-green-500/20 text-green-500'
-                                        : 'bg-yellow-500/20 text-yellow-500'
-                                }`}>
-                                    {lesson.status === 'published' ? 'Yayında' : 'Taslak'}
+                        <div
+                            key={lesson.id}
+                            onClick={() => setSelectedLesson(lesson)}
+                            className="bg-dark-800 border border-neutral-600 p-6 rounded-lg hover:border-orange-primary/50 transition-colors cursor-pointer group"
+                        >
+                            <div className="flex items-center justify-between mb-4">
+                                <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm rounded">
+                                    <span className="text-neutral-400">ID: </span>
+                                    <span className="text-orange-light">#{lesson.id}</span>
+                                </span>
+                                <div className="flex items-center gap-2">
+                                    <span className={`px-2 py-1 text-xs rounded ${lesson.status === 'published'
+                                            ? 'bg-green-500/20 text-green-500'
+                                            : 'bg-yellow-500/20 text-yellow-500'
+                                        }`}>
+                                        {lesson.status === 'published' ? 'Yayında' : 'Taslak'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <h3 className="text-xl text-white font-pixelify mb-2 group-hover:text-orange-light transition-colors">
+                                {lesson.title}
+                            </h3>
+                            <p className="text-neutral-400 text-sm mb-4">
+                                {lesson.description}
+                            </p>
+
+                            <div className="flex items-center gap-4 mb-4">
+                                <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
+                                    <span className="text-neutral-400">Kategori: </span>
+                                    <span className="text-orange-light">{lesson.category}</span>
+                                </span>
+                                <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
+                                    <span className="text-neutral-400">Zorluk: </span>
+                                    <span className="text-orange-light">{lesson.difficulty}</span>
                                 </span>
                             </div>
-                        </div>
 
-                        <h3 className="text-xl text-white font-pixelify mb-2 group-hover:text-orange-light transition-colors">
-                            {lesson.title}
-                        </h3>
-                        <p className="text-neutral-400 text-sm mb-4">
-                            {lesson.description}
-                        </p>
-
-                        <div className="flex items-center gap-4 mb-4">
-                            <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
-                                <span className="text-neutral-400">Kategori: </span>
-                                <span className="text-orange-light">{lesson.category}</span>
-                            </span>
-                            <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
-                                <span className="text-neutral-400">Zorluk: </span>
-                                <span className="text-orange-light">{lesson.difficulty}</span>
-                            </span>
-                        </div>
-
-                        <div className="flex items-center justify-between text-sm text-neutral-400">
-                            <span>
-                                Oluşturulma: {new Date(lesson.createdAt).toLocaleDateString('tr-TR')}
-                            </span>
-                            <Icon
-                                icon="pixelarticons:arrow-right"
-                                className="w-5 h-5 text-neutral-400 group-hover:text-orange-light transition-colors"
-                            />
-                        </div>
+                            <div className="flex items-center justify-between text-sm text-neutral-400">
+                                <span>
+                                    Oluşturulma: {new Date(lesson.createdAt).toLocaleDateString('tr-TR')}
+                                </span>
+                                <Icon
+                                    icon="pixelarticons:arrow-right"
+                                    className="w-5 h-5 text-neutral-400 group-hover:text-orange-light transition-colors"
+                                />
                             </div>
-                ))}
+                        </div>
+                    ))}
                 </div>
             ) : (
                 <>
@@ -231,7 +230,7 @@ const LessonContents: NextPage = () => {
             {/* Content Editor Modal */}
             {isModalOpen && selectedSection && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-dark-800 border border-neutral-600 rounded-lg w-full max-w-4xl max-h-[90vh] overflow-hidden">
+                    <div className="bg-dark-800 border border-neutral-600 bg-gray rounded-lg w-full max-w-4xl max-h-[90vh] overflow-scroll">
                         <div className="p-6 border-b border-neutral-600">
                             <div className="flex justify-between items-center">
                                 <h3 className="text-xl font-pixelify text-white">

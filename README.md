@@ -5,7 +5,7 @@
 
 Pixel Sınav, öğrenme sürecimi geliştirmek ve modern web teknolojilerini uygulamalı olarak deneyimlemek amacıyla geliştirdiğim kapsamlı bir eğitim platformudur.
 
-## 💻 Kullanılan Teknolojiler
+## Kullanılan Teknolojiler
 
 | Teknoloji | Logo | Açıklama |
 |-----------|------|----------|
@@ -17,23 +17,23 @@ Pixel Sınav, öğrenme sürecimi geliştirmek ve modern web teknolojilerini uyg
 | TailwindCSS | ![TailwindCSS](https://skillicons.dev/icons?i=tailwind) | Utility-first CSS framework |
 | React Native | ![React Native](https://skillicons.dev/icons?i=react) | Cross-platform mobil uygulama geliştirme framework'ü |
 
-## 🎯 Proje Amacı
+## Proje Amacı
 
 Bu proje, modern web teknolojilerini öğrenme yolculuğumda pratik yapma ve gerçek dünya senaryolarını deneyimleme fırsatı sağlamaktadır. Aynı zamanda, eğitim sektöründeki dijital dönüşüme katkıda bulunmayı hedeflemektedir.
 
-## 💡 Özellikler
+## Özellikler
 
-- 👨‍🏫 **Öğretmen Paneli**
+- **Öğretmen Paneli**
   - Farklı kategorilerde (matematik, edebiyat, yazılım vb.) ders içeriği oluşturma
   - İçerik yönetimi ve düzenleme
   - Öğrenci ilerleme takibi
 
-- 👨‍🎓 **Öğrenci Platformu**
+- **Öğrenci Platformu**
   - Derslere kayıt olma ve içeriklere erişim
   - İlerleme takibi
   - Kişiselleştirilmiş öğrenme deneyimi
 
-## 🛠️ Diğer Teknolojiler ve Kütüphaneler
+## Diğer Teknolojiler ve Kütüphaneler
 
 ### Frontend Kütüphaneleri
 - **Chart.js & React-ChartJS-2**: İnteraktif grafikler ve veri görselleştirme
@@ -41,7 +41,7 @@ Bu proje, modern web teknolojilerini öğrenme yolculuğumda pratik yapma ve ger
 - **React Markdown**: Markdown içerik render etme
 - **Framer Motion**: Smooth ve profesyonel animasyonlar
 
-## 🚀 Öğrenme Hedefleri
+## Öğrenme Hedefleri
 
 Bu proje ile aşağıdaki teknolojileri ve konseptleri öğrenmeyi hedefledim:
 
@@ -56,7 +56,7 @@ Bu proje ile aşağıdaki teknolojileri ve konseptleri öğrenmeyi hedefledim:
 - Clean code ve best practices
 - Git workflow ve versiyon kontrolü
 
-## 📦 Kurulum
+## Kurulum
 
 ```bash
 # Bağımlılıkları yükle
@@ -72,7 +72,7 @@ pnpm build
 pnpm start
 ```
 
-## 🎓 Öğrenme Kaynakları
+## Öğrenme Kaynakları
 
 Bu projeyi geliştirirken faydalandığım kaynaklar:
 
@@ -83,6 +83,6 @@ Bu projeyi geliştirirken faydalandığım kaynaklar:
 - [TypeScript Documentation](https://www.typescriptlang.org/docs/)
 - [TailwindCSS Documentation](https://tailwindcss.com/docs)
 
-## 🤝 Katkıda Bulunma
+## Katkıda Bulunma
 
 Bu proje açık kaynaklıdır ve katkılarınıza açıktır. Önerileriniz ve pull request'leriniz için teşekkürler!

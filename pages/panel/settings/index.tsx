@@ -24,7 +24,7 @@ const Settings: NextPage = () => {
         { id: 'security', label: 'Güvenlik', icon: 'pixelarticons:lock', component: SecuritySettings },
         { id: 'notifications', label: 'Bildirimler', icon: 'pixelarticons:notification', component: NotificationSettings },
         { id: 'appearance', label: 'Görünüm', icon: 'pixelarticons:card-text', component: AppearanceSettings },
-        { id: 'privacy', label: 'Gizlilik', icon: 'pixelarticons:shield-check', component: PrivacySettings },
+        { id: 'privacy', label: 'Gizlilik', icon: 'pixelarticons:downasaur', component: PrivacySettings },
     ]
 
     const handleSaveChanges = () => {

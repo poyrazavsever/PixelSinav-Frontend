@@ -21,7 +21,7 @@ const PrivacySettings = () => {
     };
 
     return (
-        <div className="bg-dark-800 border border-neutral-600 p-6">
+        <div className="bg-dark-800 border border-neutral-600 bg-background p-6">
             <h2 className="text-xl text-white font-pixelify mb-4">Gizlilik Ayarları</h2>
             <div className="space-y-6">
                 <div className="flex items-center justify-between">
@@ -32,7 +32,7 @@ const PrivacySettings = () => {
                     <select
                         value={privacy.profileVisibility}
                         onChange={(e) => handleSettingChange('profileVisibility', e.target.value as PrivacySettings['profileVisibility'])}
-                        className="px-4 py-2 bg-dark border border-neutral-600 text-white font-nunito
+                        className="px-4 py-2 bg-dark border border-neutral-600 bg-background text-white font-nunito
                         focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none rounded"
                     >
                         <option value="public">Herkes</option>
@@ -49,7 +49,7 @@ const PrivacySettings = () => {
                     <select
                         value={privacy.onlineStatus}
                         onChange={(e) => handleSettingChange('onlineStatus', e.target.value as PrivacySettings['onlineStatus'])}
-                        className="px-4 py-2 bg-dark border border-neutral-600 text-white font-nunito
+                        className="px-4 py-2 bg-dark border border-neutral-600 bg-background text-white font-nunito
                         focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none rounded"
                     >
                         <option value="public">Herkes</option>
@@ -66,7 +66,7 @@ const PrivacySettings = () => {
                     <select
                         value={privacy.statsSharing}
                         onChange={(e) => handleSettingChange('statsSharing', e.target.value as PrivacySettings['statsSharing'])}
-                        className="px-4 py-2 bg-dark border border-neutral-600 text-white font-nunito
+                        className="px-4 py-2 bg-dark border border-neutral-600 bg-background text-white font-nunito
                         focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none rounded"
                     >
                         <option value="public">Herkes</option>

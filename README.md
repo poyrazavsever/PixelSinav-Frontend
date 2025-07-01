@@ -1,6 +1,6 @@
 <div align="center">
   <img src="https://raw.githubusercontent.com/poyrazavsever/PixelSinav-Frontend/refs/heads/master/public/logo/logo.png" alt="Pixel Sınav Logo" width="200">
-  <h1>Pixel Sınav 📚</h1>
+  <h1>Pixel Sınav</h1>
 </div>
 
 Pixel Sınav, öğrenme sürecimi geliştirmek ve modern web teknolojilerini uygulamalı olarak deneyimlemek amacıyla geliştirdiğim kapsamlı bir eğitim platformudur.

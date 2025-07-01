@@ -23,7 +23,7 @@ const Settings: NextPage = () => {
         { id: 'profile', label: 'Profil Bilgileri', icon: 'pixelarticons:user', component: ProfileSettings },
         { id: 'security', label: 'Güvenlik', icon: 'pixelarticons:lock', component: SecuritySettings },
         { id: 'notifications', label: 'Bildirimler', icon: 'pixelarticons:notification', component: NotificationSettings },
-        { id: 'appearance', label: 'Görünüm', icon: 'pixelarticons:brush', component: AppearanceSettings },
+        { id: 'appearance', label: 'Görünüm', icon: 'pixelarticons:card-text', component: AppearanceSettings },
         { id: 'privacy', label: 'Gizlilik', icon: 'pixelarticons:shield-check', component: PrivacySettings },
     ]
 
@@ -56,13 +56,28 @@ const Settings: NextPage = () => {
                     <button
                         key={tab.id}
                         onClick={() => setActiveTab(tab.id)}
-                        className={`px-4 py-2 font-nunito whitespace-nowrap transition-colors rounded
-                            ${activeTab === tab.id
-                                ? 'bg-orange-primary text-white'
-                                : 'bg-dark-800 text-neutral-400 hover:text-white'
-                            }`}
+                        className={`
+                            relative px-4 py-2.5 font-nunito whitespace-nowrap transition-all duration-200
+                            hover:text-white flex items-center gap-2 group
+                            ${activeTab === tab.id ? 'text-white' : 'text-neutral-400'}
+                        `}
                     >
-                        <Icon icon={tab.icon} className="w-5 h-5 inline-block mr-2" />
+                        <div className={`
+                            absolute inset-0 rounded-full transition-all duration-200 -z-10
+                            ${activeTab === tab.id 
+                                ? 'bg-orange-primary/20 border border-orange-primary' 
+                                : 'bg-transparent hover:bg-dark-700'
+                            }
+                        `} />
+                        <div className={`
+                            w-7 h-7 rounded-full flex items-center justify-center transition-all duration-200
+                            ${activeTab === tab.id 
+                                ? 'bg-orange-primary text-white' 
+                                : 'bg-dark-700 text-neutral-400 group-hover:text-white'
+                            }
+                        `}>
+                            <Icon icon={tab.icon} className="w-4 h-4" />
+                        </div>
                         {tab.label}
                     </button>
                 ))}

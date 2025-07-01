@@ -24,7 +24,7 @@ const navItems: NavItem[] = [
   {
     label: 'Sınav İşlemleri',
     icon: 'pixelarticons:file',
-    href: '/panel/exams',
+    href: '',
     subItems: [
       { label: 'Sınav Ekle', href: '/panel/exams/add' },
       { label: 'Sınavları Yönet', href: '/panel/exams/manage' }
@@ -33,7 +33,7 @@ const navItems: NavItem[] = [
   {
     label: 'Kategori İşlemleri',
     icon: 'pixelarticons:align-justify',
-    href: '/panel/categories',
+    href:'',
     subItems: [
       { label: 'Kategori Ekle', href: '/panel/categories/add' },
       { label: 'Kategorileri Yönet', href: '/panel/categories/manage' }
@@ -107,7 +107,8 @@ const PanelSidebar = () => {
         <nav className="space-y-2 px-2">
           {navItems.map((item) => (
             <div key={item.label}>
-              <button
+              <Link
+                href={item.href ? item.href : ''}
                 onClick={() => item.subItems ? toggleSubItems(item.label) : null}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-white hover:bg-orange-primary/10 transition-colors
                   ${expandedItems.includes(item.label) ? 'bg-orange-primary/10' : ''}`}
@@ -132,7 +133,7 @@ const PanelSidebar = () => {
                       ${expandedItems.includes(item.label) ? 'rotate-180' : ''}`}
                   />
                 )}
-              </button>
+              </Link>
 
               {/* Sub Items */}
               <AnimatePresence>
@@ -161,7 +162,7 @@ const PanelSidebar = () => {
         </nav>
       </div>
 
-      {/* Toggle Button */}
+      {/* Toggle Link */}
       <button
         onClick={toggleSidebar}
         className="p-4 border-t border-gray flex justify-center items-center text-white hover:bg-orange-primary/10 transition-colors"

@@ -40,11 +40,6 @@ const navItems: NavItem[] = [
     ]
   },
   {
-    label: 'Hesap İşlemleri',
-    icon: 'pixelarticons:user',
-    href: '/panel/account'
-  },
-  {
     label: 'Mesajlar',
     icon: 'pixelarticons:message',
     href: '/panel/messages'

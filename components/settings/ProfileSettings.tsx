@@ -45,9 +45,9 @@ const ProfileSettings = () => {
                     />
                     <button
                         onClick={() => handleImageUpload('banner')}
-                        className="absolute bottom-4 right-4 p-2 bg-dark-800/80 text-white rounded hover:bg-dark-700/80 transition-colors"
+                        className="absolute bottom-5 right-5 p-2 bg-dark-800/80 group text-white transition-colors rounded-full cursor-pointer"
                     >
-                        <Icon icon="pixelarticons:camera" className="w-5 h-5" />
+                        <Icon icon="pixelarticons:camera" className="w-12 h-12" />
                     </button>
                 </div>
 
@@ -61,9 +61,9 @@ const ProfileSettings = () => {
                             />
                             <button
                                 onClick={() => handleImageUpload('profile')}
-                                className="absolute -bottom-2 -right-2 p-2 bg-orange-primary text-white rounded-full hover:bg-orange-600 transition-colors"
+                                className="absolute -bottom-2 -right-2 p-2 bg-orange-primary text-white rounded-full hover:bg-orange-light transition-colors cursor-pointer"
                             >
-                                <Icon icon="pixelarticons:pencil" className="w-4 h-4" />
+                                <Icon icon="pixelarticons:edit" className="w-4 h-4" />
                             </button>
                         </div>
                         <div className="mb-2">

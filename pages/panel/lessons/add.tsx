@@ -351,7 +351,7 @@ const AddLesson: NextPage = () => {
                     >
                         İptal
                     </Button>
-                    <Button type="submit">
+                    <Button>
                         Dersi Yayınla
                     </Button>
                 </div>

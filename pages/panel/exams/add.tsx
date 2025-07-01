@@ -436,7 +436,7 @@ const AddExam: NextPage = () => {
                     >
                         İptal
                     </Button>
-                    <Button type="submit">
+                    <Button>
                         Sınavı Yayınla
                     </Button>
                 </div>

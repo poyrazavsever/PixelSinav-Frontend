@@ -3,6 +3,7 @@ import LessonCard from '@/components/ui/lesson-card'
 import Head from 'next/head'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Icon } from '@iconify/react'
+import { FilterButton } from '@/components/ui/filter-button'
 
 const Learn = () => {
     const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -81,88 +82,24 @@ const Learn = () => {
                     </div>
                     <div className="flex gap-4 w-full md:w-auto">
                         {/* Kategori Filtresi */}
-                        <div className="relative w-full md:w-auto">
-                            <button
-                                onClick={() => setIsFilterOpen(!isFilterOpen)}
-                                className="w-full md:w-[200px] px-4 py-3 bg-dark-800 border border-gray text-left text-white font-nunito flex items-center justify-between
-                                hover:border-orange-primary transition-all duration-300"
-                            >
-                                <span className="block truncate">
-                                    {selectedFilter || 'Kategorilere Göre Filtrele'}
-                                </span>
-                                <Icon
-                                    icon="pixelarticons:chevron-down"
-                                    className={`w-5 h-5 transition-transform duration-300 ${isFilterOpen ? 'rotate-180' : ''}`}
-                                />
-                            </button>
-                            <AnimatePresence>
-                                {isFilterOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        className="absolute z-10 w-full mt-2 bg-dark-800 border border-gray bg-background"
-                                    >
-                                        {['Matematik', 'Fizik'].map((item) => (
-                                            <button
-                                                key={item}
-                                                onClick={() => {
-                                                    setSelectedFilter(item)
-                                                    setIsFilterOpen(false)
-                                                }}
-                                                className="w-full px-4 py-3 text-left text-white hover:bg-orange-primary/10 transition-colors"
-                                            >
-                                                {item}
-                                            </button>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
+                        <FilterButton
+                            value={selectedFilter}
+                            placeholder="Kategorilere Göre Filtrele"
+                            options={['Matematik', 'Fizik'].map(item => ({ label: item, value: item }))}
+                            onChange={setSelectedFilter}
+                        />
 
                         {/* Değerlendirme Filtresi */}
-                        <div className="relative w-full md:w-auto">
-                            <button
-                                onClick={() => setIsEvalOpen(!isEvalOpen)}
-                                className="w-full md:w-[200px] px-4 py-3 bg-dark-800 border border-gray text-left text-white font-nunito flex items-center justify-between
-                                hover:border-orange-primary transition-all duration-300"
-                            >
-                                <span className="block truncate">
-                                    {selectedEval || 'Değerlendirme'}
-                                </span>
-                                <Icon
-                                    icon="pixelarticons:chevron-down"
-                                    className={`w-5 h-5 transition-transform duration-300 ${isEvalOpen ? 'rotate-180' : ''}`}
-                                />
-                            </button>
-                            <AnimatePresence>
-                                {isEvalOpen && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: -20 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: -20 }}
-                                        className="absolute z-10 w-full mt-2 bg-dark-800 border border-gray bg-background"
-                                    >
-                                        {[
-                                            { label: 'Başlangıç', value: 'beginner' },
-                                            { label: 'Orta', value: 'intermediate' },
-                                            { label: 'İleri', value: 'advanced' }
-                                        ].map((item) => (
-                                            <button
-                                                key={item.value}
-                                                onClick={() => {
-                                                    setSelectedEval(item.label)
-                                                    setIsEvalOpen(false)
-                                                }}
-                                                className="w-full px-4 py-3 text-left text-white hover:bg-orange-primary/10 transition-colors"
-                                            >
-                                                {item.label}
-                                            </button>
-                                        ))}
-                                    </motion.div>
-                                )}
-                            </AnimatePresence>
-                        </div>
+                        <FilterButton
+                            value={selectedEval}
+                            placeholder="Değerlendirme"
+                            options={[
+                                { label: 'Başlangıç', value: 'beginner' },
+                                { label: 'Orta', value: 'intermediate' },
+                                { label: 'İleri', value: 'advanced' }
+                            ]}
+                            onChange={setSelectedEval}
+                        />
                     </div>
                 </div>
 

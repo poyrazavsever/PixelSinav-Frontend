@@ -40,21 +40,6 @@ const navItems: NavItem[] = [
     ]
   },
   {
-    label: 'Mesajlar',
-    icon: 'pixelarticons:message',
-    href: '/panel/messages'
-  },
-  {
-    label: 'İstatistikler',
-    icon: 'pixelarticons:chart',
-    href: '/panel/statistics'
-  },
-  {
-    label: 'Raporlar',
-    icon: 'pixelarticons:file-plus',
-    href: '/panel/reports'
-  },
-  {
     label: 'Ayarlar',
     icon: 'pixelarticons:command',
     href: '/panel/settings'

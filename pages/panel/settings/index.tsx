@@ -22,7 +22,7 @@ const Settings: NextPage = () => {
     const tabs: TabConfig[] = [
         { id: 'profile', label: 'Profil Bilgileri', icon: 'pixelarticons:user', component: ProfileSettings },
         { id: 'security', label: 'Güvenlik', icon: 'pixelarticons:lock', component: SecuritySettings },
-        { id: 'notifications', label: 'Bildirimler', icon: 'pixelarticons:bell', component: NotificationSettings },
+        { id: 'notifications', label: 'Bildirimler', icon: 'pixelarticons:notification', component: NotificationSettings },
         { id: 'appearance', label: 'Görünüm', icon: 'pixelarticons:brush', component: AppearanceSettings },
         { id: 'privacy', label: 'Gizlilik', icon: 'pixelarticons:shield-check', component: PrivacySettings },
     ]

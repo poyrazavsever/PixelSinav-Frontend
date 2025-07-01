@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Icon } from '@iconify/react';
+import Toggle from '@/components/ui/toggle';
+import { Button } from '../ui/button';
 
 interface SecurityState {
     currentPassword: string;
@@ -94,6 +95,7 @@ const SecuritySettings = () => {
                             placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
                         />
                     </div>
+                    <Button variant='filled'>Kaydet</Button>
                 </div>
             </div>
 
@@ -106,17 +108,14 @@ const SecuritySettings = () => {
                             Hesabınıza ekstra güvenlik katmanı ekleyin.
                         </p>
                     </div>
-                    <div className="relative inline-flex">
-                        <input
-                            type="checkbox"
-                            checked={securityData.twoFactorEnabled}
-                            onChange={toggleTwoFactor}
-                            className="sr-only peer"
-                        />
-                        <div className="w-11 h-6 bg-dark peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full 
-                            after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 
-                            after:transition-all peer-checked:bg-orange-primary"></div>
-                    </div>
+                    <Toggle
+                        checked={securityData.twoFactorEnabled}
+                        onChange={(checked) => {
+                            setSecurityData(prev => ({ ...prev, twoFactorEnabled: checked }));
+                            // TODO: Backend'e gönder
+                            console.log('2FA status changed:', checked);
+                        }}
+                    />
                 </div>
             </div>
 
@@ -135,7 +134,7 @@ const SecuritySettings = () => {
                             ) : (
                                 <button
                                     onClick={() => handleSessionTerminate(session.id)}
-                                    className="text-red-500 hover:text-red-400"
+                                    className="text-red-500 hover:text-red-400 cursor-pointer"
                                 >
                                     Oturumu Kapat
                                 </button>

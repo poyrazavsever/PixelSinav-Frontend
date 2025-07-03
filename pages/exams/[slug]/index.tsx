@@ -95,7 +95,7 @@ const ExamsDetail = () => {
 
                 <div className="w-full flex items-center justify-between pt-4 pb-12">
                     <h2 className='font-nunito font-medium text-2xl text-neutral-200'>Denklemler 1.sınav</h2>
-                    <Button variant="filled" icon="material-symbols:arrow-right-alt-rounded w-full">
+                    <Button href='/exams/tyt-matematik-deneme-1/2' variant="filled" icon="material-symbols:arrow-right-alt-rounded w-full">
                         Devam Et
                     </Button>
                 </div>

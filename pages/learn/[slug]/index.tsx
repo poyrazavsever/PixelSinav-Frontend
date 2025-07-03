@@ -95,7 +95,7 @@ const LearnDetail = () => {
 
                 <div className="w-full flex items-center justify-between pt-4 pb-12">
                     <h2 className='font-nunito font-medium text-2xl text-neutral-200'>Matematik 1. Dereceden Denklemler</h2>
-                    <Button variant="filled" icon="material-symbols:arrow-right-alt-rounded">
+                    <Button href='/learn/matematik-1-dereceden-denklemler/2' variant="filled" icon="material-symbols:arrow-right-alt-rounded">
                         Devam Et
                     </Button>
                 </div>

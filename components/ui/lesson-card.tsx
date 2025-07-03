@@ -11,7 +11,7 @@ interface LessonCardProps {
 const LessonCard = ({ image, category, title, slug, badges }: LessonCardProps) => {
   return (
     <Link 
-      href={`/dersler/${slug}`} 
+      href={`/learn/${slug}`} 
       className="block bg-gray/30 rounded-xl border border-gray overflow-hidden transition-all duration-300 hover:border-[#D65A31]/50 group"
     >
       {/* Card Image */}

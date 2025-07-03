@@ -14,7 +14,7 @@ interface ExamCardProps {
 const ExamCard = ({ image, category, title, slug, duration, questionCount, difficulty }: ExamCardProps) => {
     return (
         <Link
-            href={`/sinavlar/${slug}`}
+            href={`/exams/${slug}`}
             className="block bg-gray/30 rounded-xl border border-gray overflow-hidden transition-all duration-300 hover:border-orange-primary/50 group"
         >
             {/* Card Image */}

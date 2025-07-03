@@ -1,70 +1,85 @@
 import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
+import ReactMarkdown from 'react-markdown'
 
 const contentData = {
-    content: `# Rich Text Editor Component in Figma
+    content: `# Ders İçeriği - Aşağı Kaydırmalı
 
-Research about the WYSIWYG editor's best practices
+Rich Text Editor Component in Figma - Örnek Olarak Bunu Aldım
 
-## Key Features to Implement:
+✓ Research about the WYSIWYG editor's best practices
+○ Organize training sessions for working with rich text editor
+○ Strategize the rich text editor component structure
 
-- Responsive design
-- Rich-text formatting
-- Text color and highlighting
-- Text alignment
-- Bullet and numbered lists
-- Real-time editing
-- WYSIWYG interface
-- Font styles and sizes
-- Image insertion and editing
-- Undo/redo functionality
-- Hyperlink creation
-- Dark and light mode`
+- Responsive design         • Rich-text formatting        • Real-time editing        • WYSIWYG interface        • Font styles and sizes
+- Text color and highlighting        • Text alignment        • Bullet and numbered lists        • Undo/redo functionality        • Image insertion and editing
+- Hyperlink creation                                                                                           • Dark and light mode
+✓ Research about the WYSIWYG editor's best practices
+○ Organize training sessions for working with rich text editor
+○ Strategize the rich text editor component structure
+
+- Responsive design         • Rich-text formatting        • Real-time editing        • WYSIWYG interface        • Font styles and sizes
+- Text color and highlighting        • Text alignment        • Bullet and numbered lists        • Undo/redo functionality        • Image insertion and editing
+- Hyperlink creation                                                                                           • Dark and light mode
+
+✓ Research about the WYSIWYG editor's best practices
+○ Organize training sessions for working with rich text editor
+○ Strategize the rich text editor component structure
+
+- Responsive design         • Rich-text formatting        • Real-time editing        • WYSIWYG interface        • Font styles and sizes
+- Text color and highlighting        • Text alignment        • Bullet and numbered lists        • Undo/redo functionality        • Image insertion and editing
+- Hyperlink creation                                                                                           • Dark and light mode
+
+`
 }
 
 const LearnContent = () => {
     const [showModal, setShowModal] = useState(false)
 
     return (
-        <div className="container mx-auto max-w-7xl py-16 font-nunito">
+        <div className="container mx-auto max-w-7xl pt-6 pb-16 font-nunito">
             <div className="relative">
                 <div className="grid gap-8">
+
                     {/* Content Area */}
-                    <div className="rounded-lg bg-gray p-8">
-                        <div className="prose prose-invert max-w-none">
-                            <div dangerouslySetInnerHTML={{ __html: contentData.content }} />
-                        </div>
+                    <div className="md-content max-h-[60vh] overflow-y-auto">
+                        <ReactMarkdown>{contentData.content}</ReactMarkdown>
                     </div>
 
                     {/* Bottom Navigation */}
-                    <div className="flex items-center justify-between">
-                        <Button variant="outline" icon="material-symbols:arrow-back-rounded">
-                            Önceki
-                        </Button>
-
-                        <div className="flex items-center gap-4">
+                    <div className="flex items-center justify-between border-t border-gray pt-6">
+                        <div className='flex items-center gap-6'>
                             <Button variant="outline">
-                                Vazgeç
+                                Önceki
                             </Button>
-                            <Button variant="filled" icon="material-symbols:check-circle-outline-rounded">
-                                Kaydet
+
+                            <Button variant="filled" icon='pixelarticons:check'>
+                                Tamamla
+                            </Button>
+
+                            <Button variant="outline">
+                                Sonraki
                             </Button>
                         </div>
 
-                        <Button variant="outline" icon="material-symbols:arrow-forward-rounded">
-                            Sonraki
-                        </Button>
-                    </div>
+                        <div className='flex items-center gap-6'>
 
-                    {/* Add Content Button */}
-                    <div className="fixed bottom-8 right-8">
-                        <Button 
-                            onClick={() => setShowModal(true)}
-                            className="rounded-full !p-4"
-                            variant='outline'
-                            icon="material-symbols:add-rounded"
-                        >Not Ekle</Button>
+                            <Button
+                                onClick={() => setShowModal(true)}
+                                variant="outline"
+                                icon="material-symbols:add-rounded"
+                            >
+                                Not Ekle
+                            </Button>
+
+                            <Button variant="filled" icon="pixelarticons:android">
+                                Yapay zekaya Sor
+                            </Button>
+
+                        </div>
+
+
                     </div>
                 </div>
 
@@ -86,19 +101,19 @@ const LearnContent = () => {
                                 className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50"
                             >
                                 <div className="w-[600px] rounded-lg bg-gray p-6">
-                                    <h3 className="text-xl font-semibold text-white mb-4">Not Al...</h3>
-                                    <textarea 
-                                        className="w-full h-48 bg-gray-800 rounded-lg p-4 text-white resize-none"
+                                    <h3 className="text-xl font-medium text-white mb-4">Not Al...</h3>
+                                    <textarea
+                                        className="w-full h-48 bg-gray rounded-lg p-4 text-white resize-none outline-none border border-gray-700 focus:border-orange-600 transition-colors"
                                         placeholder="Notlarınızı buraya yazın..."
                                     />
                                     <div className="flex justify-end gap-4 mt-4">
-                                        <Button 
-                                            variant="outline" 
+                                        <Button
+                                            variant="outline"
                                             onClick={() => setShowModal(false)}
                                         >
                                             Vazgeç
                                         </Button>
-                                        <Button>
+                                        <Button variant="filled">
                                             Kaydet
                                         </Button>
                                     </div>

@@ -3,6 +3,7 @@ import Image from 'next/image'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js'
 import { Bar } from 'react-chartjs-2'
+import { Button } from '@/components/ui/button'
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend)
 
@@ -92,7 +93,12 @@ const ExamsDetail = () => {
                     />
                 </div>
 
-                <h2 className='font-nunito font-medium text-2xl text-neutral-200 py-6'>Denklemler 1.sınav</h2>
+                <div className="w-full flex items-center justify-between pt-4 pb-12">
+                    <h2 className='font-nunito font-medium text-2xl text-neutral-200'>Denklemler 1.sınav</h2>
+                    <Button variant="filled" icon="material-symbols:arrow-right-alt-rounded w-full">
+                        Devam Et
+                    </Button>
+                </div>
 
                 <div className="grid gap-6 lg:grid-cols-2">
                     <div className="space-y-1">
@@ -136,9 +142,9 @@ const ExamsDetail = () => {
                                                 <div className="mt-3">
                                                     <span className="text-xs text-neutral-300">2000xp</span>
                                                 </div>
-                                                <button className="mt-4 w-full rounded-lg bg-orange-700 px-4 py-2 text-sm text-white transition hover:bg-orange-600">
+                                                <Button className="mt-4">
                                                     Bölümü Tamamladın! →
-                                                </button>
+                                                </Button>
                                             </div>
                                         </motion.div>
                                     )}
@@ -195,4 +201,4 @@ const ExamsDetail = () => {
     )
 }
 
-export default ExamsDetail  
+export default ExamsDetail

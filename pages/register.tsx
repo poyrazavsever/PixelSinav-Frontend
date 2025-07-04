@@ -1,23 +1,116 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
+import toast, { Toaster } from "react-hot-toast";
+
+interface RegisterResponse {
+    success: boolean;
+    message: string;
+    token: string;
+    user: {
+        id: string;
+        email: string;
+        isVerified: boolean;
+        roles: string[];
+        privacy: {
+            showActive: boolean;
+            showProfilePicture: boolean;
+            showBannerPicture: boolean;
+            showProfile: boolean;
+            showLocation: boolean;
+            showStatics: boolean;
+            _id: string;
+        };
+    };
+}
 
 type PageWithLayout = {
     Layout?: boolean;
 };
 
 const RegisterPage = () => {
+    const router = useRouter();
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const [formData, setFormData] = useState({
+        username: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        terms: false
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value, type, checked } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: type === 'checkbox' ? checked : value
+        }));
+    };
+
+    const handleSubmit = async (e: FormEvent) => {
+        e.preventDefault();
+        
+        // Şifre kontrolü
+        if (formData.password !== formData.confirmPassword) {
+            toast.error("Şifreler eşleşmiyor!");
+            return;
+        }
+
+        // Şartlar kabul edildi mi?
+        if (!formData.terms) {
+            toast.error("Kullanım koşullarını kabul etmelisiniz!");
+            return;
+        }
+
+        setIsLoading(true);
+        const loadingToast = toast.loading("Kayıt işlemi yapılıyor...");
+
+        try {
+            const response = await fetch("http://localhost:3000/api/auth/register", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    username: formData.username,
+                    email: formData.email,
+                    password: formData.password,
+                }),
+            });
+
+            const data: RegisterResponse = await response.json();
+
+            if (data.success) {
+                toast.success(data.message);
+                // Token'ı localStorage'a kaydet
+                localStorage.setItem("accessToken", data.token);
+                // Kullanıcı bilgilerini localStorage'a kaydet
+                localStorage.setItem("user", JSON.stringify(data.user));
+                // Ana sayfaya yönlendir
+                router.push("/");
+            } else {
+                toast.error(data.message);
+            }
+        } catch (err) {
+            toast.error("Kayıt sırasında bir hata oluştu. Lütfen tekrar deneyin.");
+        } finally {
+            toast.dismiss(loadingToast);
+            setIsLoading(false);
+        }
+    };
 
     return (
         <>
             <Head>
                 <title>Kayıt Ol | PixelSınav</title>
             </Head>
+            <Toaster position="top-right" />
             <div className="min-h-screen flex">
                 {/* Sol Kolon - Login Formu */}
                 <motion.div
@@ -36,19 +129,21 @@ const RegisterPage = () => {
                             </p>
                         </div>
 
-                        <form className="mt-8 space-y-6">
+                        <form onSubmit={handleSubmit} className="mt-8 space-y-6">
                             <div className="space-y-4">
                                 <div>
-                                    <label htmlFor="name" className="font-nunito text-neutral-300 block mb-2">
-                                        Ad Soyad
+                                    <label htmlFor="username" className="font-nunito text-neutral-300 block mb-2">
+                                        Kullanıcı Adı
                                     </label>
                                     <input
-                                        id="name"
-                                        name="name"
+                                        id="username"
+                                        name="username"
                                         type="text"
                                         required
+                                        value={formData.username}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-3 bg-dark-800 border border-neutral-500 focus:ring-2 focus:ring-orange-light focus:outline-none focus:border-orange-light font-nunito text-white"
-                                        placeholder="Adınız Soyadınız"
+                                        placeholder="Kullanıcı Adınız"
                                     />
                                 </div>
                                 <div>
@@ -60,6 +155,8 @@ const RegisterPage = () => {
                                         name="email"
                                         type="email"
                                         required
+                                        value={formData.email}
+                                        onChange={handleChange}
                                         className="w-full px-4 py-3 bg-dark-800 border border-neutral-500 focus:ring-2 focus:ring-orange-light focus:outline-none focus:border-orange-light font-nunito text-white"
                                         placeholder="ornek@pixelsinav.com"
                                     />
@@ -74,13 +171,15 @@ const RegisterPage = () => {
                                             name="password"
                                             type={showPassword ? "text" : "password"}
                                             required
+                                            value={formData.password}
+                                            onChange={handleChange}
                                             className="w-full px-4 py-3 bg-dark-800 border border-neutral-500 focus:ring-2 focus:ring-orange-light focus:outline-none focus:border-orange-light font-nunito text-white"
                                             placeholder="••••••••"
                                         />
                                         <button
                                             type="button"
                                             onClick={() => setShowPassword(!showPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-primary transition-colors"
+                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-orange-light transition-colors"
                                         >
                                             <Icon
                                                 icon={showPassword ? "pixelarticons:eye-closed" : "pixelarticons:eye"}
@@ -97,21 +196,13 @@ const RegisterPage = () => {
                                         <input
                                             id="confirmPassword"
                                             name="confirmPassword"
-                                            type={showConfirmPassword ? "text" : "password"}
+                                            type="password"
                                             required
+                                            value={formData.confirmPassword}
+                                            onChange={handleChange}
                                             className="w-full px-4 py-3 bg-dark-800 border border-neutral-500 focus:ring-2 focus:ring-orange-light focus:outline-none focus:border-orange-light font-nunito text-white"
                                             placeholder="••••••••"
                                         />
-                                        <button
-                                            type="button"
-                                            onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                                            className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-primary transition-colors"
-                                        >
-                                            <Icon
-                                                icon={showConfirmPassword ? "pixelarticons:eye-closed" : "pixelarticons:eye"}
-                                                className="w-5 h-5"
-                                            />
-                                        </button>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +213,9 @@ const RegisterPage = () => {
                                     name="terms"
                                     type="checkbox"
                                     required
-                                    className="h-4 w-4 rounded border-neutral-600 bg-dark-800 text-primary focus:ring-orange-light focus:outline-none"
+                                    checked={formData.terms}
+                                    onChange={handleChange}
+                                    className="h-4 w-4 rounded border-neutral-600 bg-dark-800 text-orange-light focus:ring-orange-light focus:outline-none"
                                 />
                                 <label htmlFor="terms" className="ml-2 font-nunito text-sm text-neutral-300">
                                     <Link href="/terms" className="text-orange-light hover:text-orange-light/70 transition-colors">
@@ -132,8 +225,19 @@ const RegisterPage = () => {
                                 </label>
                             </div>
 
-                            <Button type="submit" className="w-md cursor-pointer justify-center">
-                                Kayıt Ol
+                            <Button 
+                                type="submit" 
+                                className="w-full cursor-pointer justify-center"
+                                disabled={isLoading}
+                            >
+                                {isLoading ? (
+                                    <span className="flex items-center gap-2">
+                                        <Icon icon="pixelarticons:clock" className="w-5 h-5 animate-spin" />
+                                        Kayıt yapılıyor...
+                                    </span>
+                                ) : (
+                                    "Kayıt Ol"
+                                )}
                             </Button>
 
                             <p className="font-nunito text-neutral-400">

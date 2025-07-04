@@ -176,7 +176,7 @@ const LoginPage = () => {
                     Beni hatırla
                   </label>
                 </div>
-                <Link href="/forgot-password" className="font-nunito text-sm text-neutral-300 hover:text-orange-light transition-colors">
+                <Link href="/auth/forgot-password" className="font-nunito text-sm text-neutral-300 hover:text-orange-light transition-colors">
                   Şifreni mi unuttun?
                 </Link>
               </div>
@@ -198,7 +198,7 @@ const LoginPage = () => {
 
               <p className="text-center font-nunito text-neutral-400">
                 Daha kayıt olmadın mı? {" "}
-                <Link href="/register" className="text-orange-light hover:text-orange-light/70 transition-colors">
+                <Link href="/auth/register" className="text-orange-light hover:text-orange-light/70 transition-colors">
                   Kayıt ol
                 </Link>
               </p>

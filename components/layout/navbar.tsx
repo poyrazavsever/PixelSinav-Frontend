@@ -3,6 +3,7 @@ import { Button } from '../ui/button'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import toast from 'react-hot-toast'
 
 interface User {
   _id: string;
@@ -78,6 +79,7 @@ const Navbar = () => {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('user');
     setUser(null);
+    toast.success('Başarıyla çıkış yaptınız!');
     router.push('/login');
   };
 
@@ -150,7 +152,7 @@ const Navbar = () => {
           ) : (
             <Button
               variant='filled'
-              href='/login'
+              href='/auth/login'
               icon="pixelarticons:arrow-right"
             >
               Giriş Yap

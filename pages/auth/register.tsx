@@ -242,7 +242,7 @@ const RegisterPage = () => {
 
                             <p className="font-nunito text-neutral-400">
                                 Zaten hesabın var mı? {" "}
-                                <Link href="/login" className="text-orange-light hover:text-orange-light/70 transition-colors">
+                                <Link href="/auth/login" className="text-orange-light hover:text-orange-light/70 transition-colors">
                                     Giriş yap
                                 </Link>
                             </p>

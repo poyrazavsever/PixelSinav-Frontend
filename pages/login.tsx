@@ -1,22 +1,77 @@
-import { useState } from "react";
+import { useState, FormEvent } from "react";
 import { motion } from "framer-motion";
 import Head from "next/head";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@iconify/react";
+import toast, { Toaster } from "react-hot-toast";
+
+interface LoginResponse {
+  success: boolean;
+  message: string;
+  accessToken: string;
+  user: {
+    _id: string;
+    email: string;
+    roles: string[];
+    isVerified: boolean;
+  };
+}
 
 type PageWithLayout = {
   Layout?: boolean;
 };
 
 const LoginPage = () => {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("http://localhost:3000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data: LoginResponse = await response.json();
+
+      if (data.success) {
+        // Token'ı localStorage'a kaydet
+        localStorage.setItem("accessToken", data.accessToken);
+        // Kullanıcı bilgilerini localStorage'a kaydet
+        localStorage.setItem("user", JSON.stringify(data.user));
+        // Ana sayfaya yönlendir
+        toast.success("Giriş başarılı!");
+        router.push("/");
+      } else {
+        setError(data.message || "Giriş başarısız oldu.");
+      }
+    } catch (err) {
+      toast.error("Giriş sırasında bir hata oluştu.");
+      setError("Bir hata oluştu. Lütfen tekrar deneyin.");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <>
       <Head>
         <title>Giriş Yap | PixelSınav</title>
       </Head>
+      <Toaster />
       <div className="min-h-screen flex">
         {/* Sol Kolon - Pixel Art Görsel */}
         <div className="hidden lg:flex lg:w-1/2 bg-primary-900 relative overflow-hidden">
@@ -57,7 +112,13 @@ const LoginPage = () => {
               </p>
             </div>
 
-            <form className="mt-8 space-y-6">
+            <form onSubmit={handleSubmit} className="mt-8 space-y-6">
+              {error && (
+                <div className="bg-red-500/10 border border-red-500 text-red-500 p-3 font-nunito text-sm">
+                  {error}
+                </div>
+              )}
+              
               <div className="space-y-4">
                 <div>
                   <label htmlFor="email" className="font-nunito text-neutral-300 block mb-2">
@@ -67,6 +128,8 @@ const LoginPage = () => {
                     id="email"
                     name="email"
                     type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     className="w-full px-4 py-3 bg-dark-800 border border-neutral-500 focus:ring-2 focus:ring-orange-light focus:outline-none focus:border-orange-light font-nunito text-white"
                     placeholder="ornek@pixelsinav.com"
@@ -81,6 +144,8 @@ const LoginPage = () => {
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
                       required
                       className="w-full px-4 py-3 bg-dark-800 border border-neutral-500 focus:ring-2 focus:ring-orange-light focus:outline-none focus:border-orange-light font-nunito text-white"
                       placeholder="••••••••"
@@ -88,7 +153,7 @@ const LoginPage = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-primary transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 hover:text-orange-light transition-colors"
                     >
                       <Icon 
                         icon={showPassword ? "pixelarticons:eye-closed" : "pixelarticons:eye"} 
@@ -105,22 +170,33 @@ const LoginPage = () => {
                     id="remember-me"
                     name="remember-me"
                     type="checkbox"
-                    className="h-4 w-4 rounded border-neutral-600 bg-dark-800 text-primary focus:ring-orange-light focus:outline-none"
+                    className="h-4 w-4 rounded border-neutral-600 bg-dark-800 text-orange-light focus:ring-orange-light focus:outline-none"
                   />
-                  <label orange-light="remember-me" className="ml-2 font-nunito text-sm text-neutral-300">
+                  <label htmlFor="remember-me" className="ml-2 font-nunito text-sm text-neutral-300">
                     Beni hatırla
                   </label>
                 </div>
-                <Link href="/forgot-password" className="font-nunito text-sm text-neutral-300 hover:underline">
+                <Link href="/forgot-password" className="font-nunito text-sm text-neutral-300 hover:text-orange-light transition-colors">
                   Şifreni mi unuttun?
                 </Link>
               </div>
 
-              <Button type="submit" className="w-md cursor-pointer justify-center">
-                Giriş Yap
+              <Button 
+                type="submit" 
+                className="w-full sm:w-md cursor-pointer justify-center"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="flex items-center gap-2">
+                    <Icon icon="pixelarticons:clock" className="w-5 h-5 animate-spin" />
+                    Giriş yapılıyor...
+                  </span>
+                ) : (
+                  "Giriş Yap"
+                )}
               </Button>
 
-              <p className="font-nunito text-neutral-400">
+              <p className="text-center font-nunito text-neutral-400">
                 Daha kayıt olmadın mı? {" "}
                 <Link href="/register" className="text-orange-light hover:text-orange-light/70 transition-colors">
                   Kayıt ol

@@ -116,7 +116,7 @@ const Navbar = () => {
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 focus:outline-none"
+                  className="flex items-center gap-2 focus:outline-none cursor-pointer"
                 >
                   <img
                     src={user.profilePicture || "/images/defaultAvatar.png"}
@@ -130,7 +130,7 @@ const Navbar = () => {
                 </button>
 
                 {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-lg bg-dark-800 border border-neutral-700 shadow-sm py-1 z-50">
+                  <div className="absolute right-0 mt-2 w-48 rounded-lg bg-dark-800 border border-neutral-700 bg-gray shadow-sm py-1 z-50">
                     <Link
                       href={`/profile/${user._id}`}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"

@@ -7,23 +7,25 @@ import ExamCard from '@/components/ui/exam-card';
 import LessonCard from '@/components/ui/lesson-card';
 
 interface User {
-  _id: string;
-  email: string;
-  username: string;
-  isVerified: boolean;
-  roles: string[];
-  profilePicture?: string;
-  bannerPicture?: string;
-  privacy: {
-    showActive: boolean;
-    showProfilePicture: boolean;
-    showBannerPicture: boolean;
-    showProfile: boolean;
-    showLocation: boolean;
-    showStatics: boolean;
-  };
-  createdAt: string;
-  updatedAt: string;
+    _id: string;
+    email: string;
+    username: string;
+    isVerified: boolean;
+    roles: string[];
+    bio?: string;
+    location?: string;
+    profilePicture?: string;
+    bannerPicture?: string;
+    privacy: {
+      showActive: boolean;
+      showProfilePicture: boolean;
+      showBannerPicture: boolean;
+      showProfile: boolean;
+      showLocation: boolean;
+      showStatics: boolean;
+    };
+    createdAt: string;
+    updatedAt: string;
 }
 
 const tabs = [
@@ -174,20 +176,30 @@ const Profile = () => {
               {/* Kullanıcı Bilgileri */}
               <div className="flex-1 text-center sm:text-left">
                 <div className="flex items-center gap-3 justify-center sm:justify-start flex-wrap">
-                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2">
                     <h1 className="text-3xl font-pixelify text-white">{user.username}</h1>
                     {user.isVerified && (
-                      <Icon icon="pixelarticons:check-double" className="w-6 h-6 text-orange-light" />
+                        <Icon icon="pixelarticons:check-double" className="w-6 h-6 text-orange-light" />
                     )}
-                  </div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-nunito ${roleBadgeColor}`}>
+                    </div>
+                    <span className={`px-3 py-1 rounded-full text-sm font-nunito ${roleBadgeColor}`}>
                     {userRole}
-                  </span>
+                    </span>
                 </div>
+                
+                {/* Bio */}
                 <p className="text-neutral-400 font-nunito mt-2 max-w-2xl">
-                  Matematik ve Fizik alanında kendimi geliştiriyorum. PixelSınav ile başarıya ulaşmak için çalışıyorum! 🚀
+                    {user.bio || "Biyografi bulunmuyor..."}
                 </p>
-              </div>
+                
+                {/* Location */}
+                {user.privacy.showLocation && (
+                    <div className="flex items-center gap-2 mt-3 text-neutral-500 font-nunito">
+                    <Icon icon="pixelarticons:pin" className="w-4 h-4" />
+                    <span>{user.location || "Konum belirtilmemiş"}</span>
+                    </div>
+                )}
+                </div>
             </div>
 
             {/* Tabs */}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '../ui/button'
 import { Icon } from '@iconify/react'
 import Link from 'next/link'
@@ -31,6 +31,7 @@ const Navbar = () => {
   const [user, setUser] = useState<User | null>(null);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const links = [
     { name: 'Ana Sayfa', href: '/' },
@@ -83,6 +84,19 @@ const Navbar = () => {
     router.push('/login');
   };
 
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
   return (
     <nav className='py-6 flex items-center justify-between max-w-7xl mx-auto container'>
       <div className='flex items-center gap-4'>
@@ -113,24 +127,27 @@ const Navbar = () => {
                 Öğretmen Ol
               </Button>
 
-              <div className="relative">
+              <div className="relative" ref={dropdownRef}>
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center gap-2 focus:outline-none cursor-pointer"
+                  className="flex items-center gap-2 focus:outline-none cursor-pointer group"
                 >
                   <img
                     src={user.profilePicture || "/images/defaultAvatar.png"}
                     alt="Profil"
-                    className="w-10 h-10 rounded-full border-2 border-orange-light"
+                    className="w-10 h-10 rounded-full border-2 border-orange-light group-hover:border-orange-600 transition-colors"
                   />
                   <Icon 
                     icon="pixelarticons:chevron-down" 
-                    className={`w-5 h-5 text-orange-light transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    className={`w-5 h-5 text-orange-light transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
                   />
                 </button>
 
-                {isDropdownOpen && (
-                  <div className="absolute right-0 mt-2 w-48 rounded-lg bg-dark-800 border border-neutral-700 bg-gray shadow-sm py-1 z-50">
+                <div className={`absolute right-0 mt-2 w-48 rounded-lg bg-dark-800 border border-neutral-700 bg-gray shadow-lg py-1 z-50 transform transition-all duration-200 origin-top-right ${
+                  isDropdownOpen 
+                    ? 'opacity-100 scale-100 translate-y-0' 
+                    : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+                }`}>
                     <Link
                       href={`/profile/${user._id}`}
                       className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
@@ -138,15 +155,21 @@ const Navbar = () => {
                       <Icon icon="pixelarticons:user" className="w-5 h-5" />
                       Profil
                     </Link>
+                    <Link
+                      href="/panel/settings"
+                      className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
+                    >
+                      <Icon icon="pixelarticons:command" className="w-5 h-5" />
+                      Ayarlar
+                    </Link>
                     <button
                       onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
+                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors border-t border-neutral-700 cursor-pointer"
                     >
                       <Icon icon="pixelarticons:logout" className="w-5 h-5" />
                       Çıkış Yap
                     </button>
-                  </div>
-                )}
+                </div>
               </div>
             </>
           ) : (

@@ -79,7 +79,7 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ userData }) => {
         setMessage(null);
 
         try {
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('accessToken');
             const { data } = await axios.put(
                 'http://localhost:3000/api/auth/update',
                 profileData,

@@ -156,7 +156,7 @@ const Navbar = () => {
                       Profil
                     </Link>
                     <Link
-                      href="/panel/settings"
+                      href="/profile/settings"
                       className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
                     >
                       <Icon icon="pixelarticons:command" className="w-5 h-5" />

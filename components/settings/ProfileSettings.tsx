@@ -47,7 +47,6 @@ const ProfileSettings: React.FC<ProfileSettingsProps> = ({ userData }) => {
         bannerPicture: userData?.bannerPicture || '/images/login.png'
     });
 
-    console.log('Profile Data:', userData);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
 

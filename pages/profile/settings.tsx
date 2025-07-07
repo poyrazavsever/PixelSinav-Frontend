@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import type { NextPage } from 'next'
 import { Icon } from '@iconify/react'
 import { Button } from '@/components/ui/button'
@@ -12,12 +12,81 @@ interface TabConfig {
     id: string;
     label: string;
     icon: string;
-    component: React.ComponentType;
+    component: React.ComponentType<{ userData?: any }>;
+}
+
+interface UserData {
+    _id: string;
+    email: string;
+    username: string;
+    name?: string;
+    profilePicture?: string;
+    bannerPicture?: string;
+    location?: string;
+    bio?: string;
+    isVerified: boolean;
+    roles: string[];
+    notifications?: Array<{
+        _id: string;
+        type: string;
+        default: string[];
+        period: string;
+    }>;
+    privacy: {
+        showActive: boolean;
+        showProfilePicture: boolean;
+        showBannerPicture: boolean;
+        showProfile: boolean;
+        showLocation: boolean;
+        showStatics: boolean;
+    };
+    updatedAt: string;
+    createdAt: string;
 }
 
 const Settings: NextPage = () => {
     const [activeTab, setActiveTab] = useState('profile')
     const [hasChanges, setHasChanges] = useState(false)
+    const [userData, setUserData] = useState<UserData | null>(null)
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                // Local storage'dan user bilgilerini al
+                const localUser = localStorage.getItem('user')
+                if (!localUser) return
+
+                const { _id } = JSON.parse(localUser)
+
+                // API'den detaylı bilgileri çek
+                const response = await fetch('http://localhost:3000/api/auth/findOneById', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ id: _id }),
+                })
+
+                const data = await response.json()
+                if (data.success) {
+                    // Default resimler için kontrol
+                    const userData = {
+                        ...data.user,
+                        profilePicture: data.user.profilePicture || "/images/defaultAvatar.png",
+                        bannerPicture: data.user.bannerPicture || "/images/login.png"
+                    }
+                    setUserData(userData)
+                }
+            } catch (error) {
+                console.error('Kullanıcı bilgileri alınamadı:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchUserData()
+    }, [])
 
     const tabs: TabConfig[] = [
         { id: 'profile', label: 'Profil Bilgileri', icon: 'pixelarticons:user', component: ProfileSettings },
@@ -27,13 +96,37 @@ const Settings: NextPage = () => {
         { id: 'privacy', label: 'Gizlilik', icon: 'pixelarticons:downasaur', component: PrivacySettings },
     ]
 
-    const handleSaveChanges = () => {
-        // Save changes to backend
-        console.log('Saving changes...')
-        setHasChanges(false)
+    const handleSaveChanges = async () => {
+        if (!userData) return
+
+        try {
+            // API'ye değişiklikleri gönder
+            const response = await fetch('http://localhost:3000/api/auth/update', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(userData),
+            })
+
+            const data = await response.json()
+            if (data.success) {
+                setHasChanges(false)
+            }
+        } catch (error) {
+            console.error('Değişiklikler kaydedilemedi:', error)
+        }
     }
 
     const ActiveComponent = tabs.find(tab => tab.id === activeTab)?.component || tabs[0].component
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-dark flex items-center justify-center">
+                <Icon icon="pixelarticons:clock" className="w-8 h-8 text-orange-light animate-spin" />
+            </div>
+        )
+    }
 
     return (
         <div className='max-w-7xl container mx-auto py-16'>
@@ -85,7 +178,7 @@ const Settings: NextPage = () => {
 
             {/* Content */}
             <div className="space-y-6">
-                <ActiveComponent />
+                <ActiveComponent userData={userData} />
             </div>
         </div>
     )

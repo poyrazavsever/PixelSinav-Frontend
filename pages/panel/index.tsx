@@ -23,10 +23,6 @@ ChartJS.register(
   Legend
 )
 
-type PageWithLayout = {
-  Layout?: boolean;
-};
-
 // Chart options
 const chartOptions = {
   responsive: true,
@@ -146,7 +142,6 @@ const Panel = () => {
 
   return (
     <div className="flex h-screen bg-dark">
-      <PanelSidebar />
 
       {/* Main Content */}
       <div className="flex-1 p-8 overflow-y-auto">
@@ -222,6 +217,6 @@ const Panel = () => {
   )
 }
 
-(Panel as PageWithLayout).Layout = false;
+(Panel as any).Layout = 'panel';
 
 export default Panel

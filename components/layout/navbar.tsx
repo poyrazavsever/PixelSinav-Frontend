@@ -119,13 +119,23 @@ const Navbar = () => {
         {!isLoading && (
           user ? (
             <>
-              <Button
-                variant='outline'
-                href='/become-teacher'
-                icon="pixelarticons:graduate"
-              >
-                Öğretmen Ol
-              </Button>
+              {user.roles.includes('teacher') ? (
+                <Button
+                  variant='outline'
+                  href='/panel'
+                  icon="pixelarticons:command"
+                >
+                  Panel
+                </Button>
+              ) : (
+                <Button
+                  variant='outline'
+                  href='/become-teacher'
+                  icon="pixelarticons:graduate"
+                >
+                  Öğretmen Ol
+                </Button>
+              )}
 
               <div className="relative" ref={dropdownRef}>
                 <button

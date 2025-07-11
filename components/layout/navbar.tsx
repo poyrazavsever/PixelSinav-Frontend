@@ -44,9 +44,9 @@ const Navbar = () => {
     const fetchUser = async () => {
 
       const userId = localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')!)._id : null;
-      
+
       console.log('User ID:', userId);
-      
+
 
       if (!userId) {
         setIsLoading(false);
@@ -101,13 +101,13 @@ const Navbar = () => {
     <nav className='py-6 flex items-center justify-between max-w-7xl mx-auto container'>
       <div className='flex items-center gap-4'>
         <Link href="/">
-          <img src="/logo/logo.png" alt="navbar logo" className='w-12 h-12 mr-4'/>
+          <img src="/logo/logo.png" alt="navbar logo" className='w-12 h-12 mr-4' />
         </Link>
 
         {links.map((link, index) => (
-          <Link 
-            key={index} 
-            href={link.href} 
+          <Link
+            key={index}
+            href={link.href}
             className='text-text hover:text-orange-light transition-colors duration-200'
           >
             {link.name}
@@ -147,38 +147,37 @@ const Navbar = () => {
                     alt="Profil"
                     className="w-10 h-10 rounded-full border-2 border-orange-light group-hover:border-orange-600 transition-colors"
                   />
-                  <Icon 
-                    icon="pixelarticons:chevron-down" 
+                  <Icon
+                    icon="pixelarticons:chevron-down"
                     className={`w-5 h-5 text-orange-light transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
                   />
                 </button>
 
-                <div className={`absolute right-0 mt-2 w-48 rounded-lg bg-dark-800 border border-neutral-700 bg-gray shadow-lg py-1 z-50 transform transition-all duration-200 origin-top-right ${
-                  isDropdownOpen 
-                    ? 'opacity-100 scale-100 translate-y-0' 
+                <div className={`absolute right-0 mt-2 w-48 rounded-lg bg-dark-800 border border-neutral-700 bg-gray shadow-lg py-1 z-50 transform transition-all duration-200 origin-top-right ${isDropdownOpen
+                    ? 'opacity-100 scale-100 translate-y-0'
                     : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
-                }`}>
-                    <Link
-                      href={`/profile/${user._id}`}
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
-                    >
-                      <Icon icon="pixelarticons:user" className="w-5 h-5" />
-                      Profil
-                    </Link>
-                    <Link
-                      href="/profile/settings"
-                      className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
-                    >
-                      <Icon icon="pixelarticons:command" className="w-5 h-5" />
-                      Ayarlar
-                    </Link>
-                    <button
-                      onClick={handleLogout}
-                      className="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors border-t border-neutral-700 cursor-pointer"
-                    >
-                      <Icon icon="pixelarticons:logout" className="w-5 h-5" />
-                      Çıkış Yap
-                    </button>
+                  }`}>
+                  <Link
+                    href={`/profile/${user._id}`}
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
+                  >
+                    <Icon icon="pixelarticons:user" className="w-5 h-5" />
+                    Profil
+                  </Link>
+                  <Link
+                    href="/profile/settings"
+                    className="flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors"
+                  >
+                    <Icon icon="pixelarticons:command" className="w-5 h-5" />
+                    Ayarlar
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2 px-4 py-2 text-sm text-neutral-300 hover:bg-orange-light/10 hover:text-orange-light transition-colors border-t border-neutral-700 cursor-pointer"
+                  >
+                    <Icon icon="pixelarticons:logout" className="w-5 h-5" />
+                    Çıkış Yap
+                  </button>
                 </div>
               </div>
             </>

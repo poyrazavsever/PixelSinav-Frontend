@@ -7,7 +7,7 @@ interface NavItem {
   label: string
   icon: string
   href: string
-  subItems?: { label: string; href: string }[]
+  subItems?: { label: string; href: string; icon: string }[]
 }
 
 const navItems: NavItem[] = [
@@ -16,9 +16,9 @@ const navItems: NavItem[] = [
     icon: 'pixelarticons:book-open',
     href: '',
     subItems: [
-      { label: 'Ders Ekle', href: '/panel/lessons/add' },
-      { label: 'Dersleri Yönet', href: '/panel/lessons/manage' },
-      { label: 'Ders İçerikleri', href: '/panel/lessons/contents' }
+      { label: 'Ders Ekle', href: '/panel/lessons/add', icon: 'pixelarticons:plus' },
+      { label: 'Dersleri Yönet', href: '/panel/lessons/manage', icon: 'pixelarticons:edit' },
+      { label: 'Ders İçerikleri', href: '/panel/lessons/contents', icon: 'pixelarticons:article' }
     ]
   },
   {
@@ -26,17 +26,17 @@ const navItems: NavItem[] = [
     icon: 'pixelarticons:file',
     href: '',
     subItems: [
-      { label: 'Sınav Ekle', href: '/panel/exams/add' },
-      { label: 'Sınavları Yönet', href: '/panel/exams/manage' }
+      { label: 'Sınav Ekle', href: '/panel/exams/add', icon: 'pixelarticons:plus' },
+      { label: 'Sınavları Yönet', href: '/panel/exams/manage', icon: 'pixelarticons:edit' }
     ]
   },
   {
     label: 'Kategori İşlemleri',
     icon: 'pixelarticons:align-justify',
-    href:'',
+    href: '',
     subItems: [
-      { label: 'Kategori Ekle', href: '/panel/categories/add' },
-      { label: 'Kategorileri Yönet', href: '/panel/categories/manage' }
+      { label: 'Kategori Ekle', href: '/panel/categories/add', icon: 'pixelarticons:plus' },
+      { label: 'Kategorileri Yönet', href: '/panel/categories/manage', icon: 'pixelarticons:edit' }
     ]
   },
   {
@@ -131,6 +131,7 @@ const PanelSidebar = () => {
                         href={subItem.href}
                         className="flex items-center gap-3 px-12 py-2 text-neutral-300 hover:text-white hover:bg-orange-primary/10 transition-colors font-nunito"
                       >
+                        <Icon icon={subItem.icon} className="w-4 h-4" />
                         {subItem.label}
                       </Link>
                     ))}

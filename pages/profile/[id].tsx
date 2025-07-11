@@ -7,25 +7,25 @@ import ExamCard from '@/components/ui/exam-card';
 import LessonCard from '@/components/ui/lesson-card';
 
 interface User {
-    _id: string;
-    email: string;
-    username: string;
-    isVerified: boolean;
-    roles: string[];
-    bio?: string;
-    location?: string;
-    profilePicture?: string;
-    bannerPicture?: string;
-    privacy: {
-      showActive: boolean;
-      showProfilePicture: boolean;
-      showBannerPicture: boolean;
-      showProfile: boolean;
-      showLocation: boolean;
-      showStatics: boolean;
-    };
-    createdAt: string;
-    updatedAt: string;
+  _id: string;
+  email: string;
+  username: string;
+  isVerified: boolean;
+  roles: string[];
+  bio?: string;
+  location?: string;
+  profilePicture?: string;
+  bannerPicture?: string;
+  privacy: {
+    showActive: boolean;
+    showProfilePicture: boolean;
+    showBannerPicture: boolean;
+    showProfile: boolean;
+    showLocation: boolean;
+    showStatics: boolean;
+  };
+  createdAt: string;
+  updatedAt: string;
 }
 
 const tabs = [
@@ -87,9 +87,16 @@ const Profile = () => {
   }, [id]);
 
   const getUserRole = (roles: string[]) => {
-    if (roles.includes('2')) return 'Admin';
-    if (roles.includes('1')) return 'Öğretmen';
-    return 'Öğrenci';
+    if (roles.includes('user') && roles.includes('teacher') && roles.includes('admin')) {
+      return 'Admin';
+    }
+    if (roles.includes('user') && roles.includes('teacher')) {
+      return 'Öğretmen';
+    }
+    if (roles.includes('user')) {
+      return 'Öğrenci';
+    }
+    return 'Öğrenci'; // Varsayılan rol
   };
 
   const getRoleBadgeColor = (role: string) => {
@@ -97,7 +104,7 @@ const Profile = () => {
       case 'Admin':
         return 'bg-red-500/20 text-red-500 border-red-500/30';
       case 'Öğretmen':
-        return 'bg-blue-500/20 text-blue-500 border-blue-500/30';
+        return 'bg-blue-500/20 text-blue-300 border-blue-500/30';
       default:
         return 'bg-orange-light/20 text-orange-light border-orange-light/30';
     }
@@ -111,21 +118,21 @@ const Profile = () => {
 
   if (!user) {
     return <div className="min-h-[60vh] bg-dark flex items-center justify-center">
-    <div className="flex flex-col items-center text-center space-y-4 animate-fade-in">
-      <img
-        src="/logo/logo.png"
-        alt="Logo"
-        className="w-20 h-20 object-contain opacity-80"
-      />
-      <h1 className="text-xl md:text-2xl text-neutral-300 font-semibold font-nunito">
-        Kullanıcı Bulunamadı
-      </h1>
-      <p className="text-neutral-500 text-sm font-nunito">
-        Aradığınız kullanıcı sistemde kayıtlı değil veya silinmiş olabilir.
-      </p>
+      <div className="flex flex-col items-center text-center space-y-4 animate-fade-in">
+        <img
+          src="/logo/logo.png"
+          alt="Logo"
+          className="w-20 h-20 object-contain opacity-80"
+        />
+        <h1 className="text-xl md:text-2xl text-neutral-300 font-semibold font-nunito">
+          Kullanıcı Bulunamadı
+        </h1>
+        <p className="text-neutral-500 text-sm font-nunito">
+          Aradığınız kullanıcı sistemde kayıtlı değil veya silinmiş olabilir.
+        </p>
+      </div>
     </div>
-  </div>
-  ;
+      ;
   }
 
   const userRole = getUserRole(user.roles);
@@ -133,8 +140,8 @@ const Profile = () => {
 
   const tabVariants = {
     inactive: { opacity: 0, y: 20 },
-    active: { 
-      opacity: 1, 
+    active: {
+      opacity: 1,
       y: 0,
       transition: { duration: 0.5 }
     },
@@ -176,30 +183,30 @@ const Profile = () => {
               {/* Kullanıcı Bilgileri */}
               <div className="flex-1 text-center sm:text-left">
                 <div className="flex items-center gap-3 justify-center sm:justify-start flex-wrap">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
                     <h1 className="text-3xl font-pixelify text-white">{user.username}</h1>
                     {user.isVerified && (
-                        <Icon icon="pixelarticons:check-double" className="w-6 h-6 text-orange-light" />
+                      <Icon icon="pixelarticons:check-double" className="w-6 h-6 text-orange-light" />
                     )}
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-nunito ${roleBadgeColor}`}>
+                  </div>
+                  <span className={`px-3 py-1 rounded-full text-sm font-nunito ${roleBadgeColor}`}>
                     {userRole}
-                    </span>
+                  </span>
                 </div>
-                
+
                 {/* Bio */}
                 <p className="text-neutral-400 font-nunito mt-2 max-w-2xl">
-                    {user.bio || "Biyografi bulunmuyor..."}
+                  {user.bio || "Biyografi bulunmuyor..."}
                 </p>
-                
+
                 {/* Location */}
                 {user.privacy.showLocation && (
-                    <div className="flex items-center gap-2 mt-3 text-neutral-500 font-nunito">
+                  <div className="flex items-center gap-2 mt-3 text-neutral-500 font-nunito">
                     <Icon icon="pixelarticons:pin" className="w-4 h-4" />
                     <span>{user.location || "Konum belirtilmemiş"}</span>
-                    </div>
+                  </div>
                 )}
-                </div>
+              </div>
             </div>
 
             {/* Tabs */}
@@ -209,11 +216,10 @@ const Profile = () => {
                   <button
                     key={tab.id}
                     onClick={() => setActiveTab(tab.id)}
-                    className={`px-4 py-4 font-nunito relative cursor-pointer ${
-                      activeTab === tab.id
+                    className={`px-4 py-4 font-nunito relative cursor-pointer ${activeTab === tab.id
                         ? 'text-orange-light'
                         : 'text-neutral-400 hover:text-neutral-300'
-                    }`}
+                      }`}
                   >
                     {tab.label}
                     {activeTab === tab.id && (

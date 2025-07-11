@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import PanelSidebar from './panelSidebar'
 import { useRouter } from 'next/router'
-import toast from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 
 interface PanelLayoutProps {
     children: React.ReactNode
@@ -32,6 +32,9 @@ const PanelLayout = ({ children }: PanelLayoutProps) => {
 
     return (
         <div className="flex h-screen bg-dark">
+
+            <Toaster position='top-center'/>
+
             <PanelSidebar />
             <div className="flex-1 p-8 overflow-y-auto">
                 {children}

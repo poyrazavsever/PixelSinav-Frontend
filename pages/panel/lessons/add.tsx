@@ -1,49 +1,74 @@
 import React from 'react'
 import { Icon } from '@iconify/react'
 import type { NextPage } from 'next'
+import { useRouter } from 'next/router'
 import { Button } from '@/components/ui/button'
+import axios from 'axios'
+import toast from 'react-hot-toast'
 
-interface Section {
-    id: string
-    title: string
-    description: string
-    xpPoints: number
+interface LessonSection {
+    id?: string // Frontend için gerekli
+    title: string         // 3-100 karakter
+    content: string       // Markdown içerik (min 10 karakter)
+    description: string   // 10-1000 karakter
+    order: number        // Minimum 1
+    xpPoints: number     // 0-5000 arası
 }
 
-interface LessonFormData {
-    title: string
-    category: string
-    description: string
-    difficulty: string
-    image: File | null
-    sections: Section[]
+interface CreateLessonDto {
+    title: string              // 3-100 karakter
+    category: string           // Boş olamaz
+    difficultyLevel: 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
+    tags: string[]            // En az 1 etiket
+    image: string | null       // Resim URL'i
+    description: string       // 10-2000 karakter
+    sections: LessonSection[] // En az 1 bölüm
+    userId?: string          // Backend'de eklenecek
+    teacherId?: string       // Backend'de eklenecek
+    status?: 'DRAFT' | 'PUBLISHED'
 }
 
 const MAX_TOTAL_XP = 5000;
 
 const AddLesson: NextPage = () => {
+    const router = useRouter()
     const [dragActive, setDragActive] = React.useState(false)
     const [selectedImage, setSelectedImage] = React.useState<string | null>(null)
-    const [sections, setSections] = React.useState<Section[]>([])
+    const [sections, setSections] = React.useState<LessonSection[]>([])
+    const [loading, setLoading] = React.useState(false)
+    const [formData, setFormData] = React.useState({
+        title: '',
+        category: '',
+        difficultyLevel: 'BEGINNER' as const,
+        tags: '',
+        description: '',
+    })
 
     const totalXP = sections.reduce((sum, section) => sum + section.xpPoints, 0)
     const remainingXP = MAX_TOTAL_XP - totalXP
 
     const addSection = () => {
-        const newSection: Section = {
+        const newSection: LessonSection = {
             id: Date.now().toString(),
             title: '',
+            content: '',
             description: '',
+            order: sections.length + 1,
             xpPoints: Math.min(1000, remainingXP)
         }
         setSections([...sections, newSection])
     }
 
     const removeSection = (id: string) => {
-        setSections(sections.filter(section => section.id !== id))
+        const updatedSections = sections.filter(section => section.id !== id)
+            .map((section, index) => ({
+                ...section,
+                order: index + 1
+            }));
+        setSections(updatedSections)
     }
 
-    const updateSection = (id: string, field: keyof Section, value: string | number) => {
+    const updateSection = (id: string, field: keyof Omit<LessonSection, 'id' | 'order'>, value: string | number) => {
         if (field === 'xpPoints') {
             const numValue = typeof value === 'string' ? parseInt(value) : value;
             const otherSectionsXP = sections.reduce((sum, section) =>
@@ -98,6 +123,117 @@ const AddLesson: NextPage = () => {
         }
     }
 
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+
+        // Temel form validasyonu
+        if (!formData.title || !formData.category || !formData.description || sections.length === 0) {
+            toast.error('Lütfen tüm zorunlu alanları doldurun');
+            return;
+        }
+
+        // Karakter uzunluğu kontrolleri
+        if (formData.title.length < 3 || formData.title.length > 100) {
+            toast.error('Ders adı 3-100 karakter arasında olmalıdır');
+            return;
+        }
+
+        if (formData.description.length < 10 || formData.description.length > 2000) {
+            toast.error('Ders açıklaması 10-2000 karakter arasında olmalıdır');
+            return;
+        }
+
+        // Tag kontrolü
+        const tags = formData.tags
+            .split(',')
+            .map(tag => tag.trim())
+            .filter(tag => tag.length > 0);
+
+        if (tags.length === 0) {
+            toast.error('En az bir etiket eklemelisiniz');
+            return;
+        }
+
+        // Section validasyonu
+        const validSections = sections.every(section =>
+            section.title.length >= 3 &&
+            section.title.length <= 100 &&
+            section.description.length >= 10 &&
+            section.description.length <= 1000 &&
+            section.xpPoints > 0 &&
+            section.xpPoints <= 5000
+        );
+
+        if (!validSections) {
+            toast.error('Lütfen bölüm bilgilerini kontrol edin');
+            return;
+        }
+
+        const userStr = localStorage.getItem('user');
+        if (!userStr) {
+            toast.error('Oturum bulunamadı');
+            return;
+        }
+
+        const user = JSON.parse(userStr);
+        const token = localStorage.getItem('accessToken');
+
+        setLoading(true);
+        try {
+            // API'nin beklediği formatta veriyi hazırla
+            const requestData: CreateLessonDto = {
+                title: formData.title,
+                category: formData.category,
+                difficultyLevel: formData.difficultyLevel as 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED',
+                description: formData.description,
+                tags: tags,
+                image: selectedImage ? selectedImage.split('/').pop() || 'default-image.jpg' : 'default-image.jpg',
+                sections: sections.map(section => ({
+                    title: section.title,
+                    content: 'Bu bölümün içeriği yakında eklenecektir. Ekip çalışanlarımız içeriği en kısa sürede hazırlayacaktır. Anlayışınız için teşekkür ederiz.',
+                    description: section.description,
+                    order: section.order,
+                    xpPoints: section.xpPoints
+                })),
+                status: 'DRAFT',
+                userId: user._id
+            };
+
+            console.log('Gönderilen veri:', JSON.stringify(requestData, null, 2));
+
+            const response = await axios.post('http://localhost:3000/api/lessons', requestData, {
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.status === 201) {
+                toast.success('Ders başarıyla oluşturuldu!');
+                router.push('/panel/lessons/manage');
+            }
+        } catch (error: any) {
+            console.error('Ders oluşturma hatası:', error);
+            if (error.response?.status === 401) {
+                toast.error('Oturumunuzun süresi dolmuş olabilir, lütfen tekrar giriş yapın');
+            } else if (error.response?.status === 403) {
+                toast.error('Bu işlem için yetkiniz bulunmuyor');
+            } else {
+                toast.error(error.response?.data?.message || 'Ders oluşturulurken bir hata oluştu');
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
     return (
         <>
             <h1 className="font-pixelify text-4xl mb-8">
@@ -105,19 +241,24 @@ const AddLesson: NextPage = () => {
                 <span className="text-white"> Ders Ekle</span>
             </h1>
 
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="bg-dark-800 border border-neutral-600 p-6 mb-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Ders Adı */}
                         <div>
                             <label className="block font-nunito text-white mb-2">
                                 Ders Adı
-                            </label>
-                            <input
+                            </label>                                <input
                                 type="text"
+                                name="title"
+                                value={formData.title}
+                                onChange={handleChange}
                                 placeholder="Matematik 101: Temel Kavramlar"
+                                minLength={3}
+                                maxLength={100}
                                 className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
-                placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                    placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                required
                             />
                         </div>
 
@@ -127,13 +268,17 @@ const AddLesson: NextPage = () => {
                                 Kategori
                             </label>
                             <select
+                                name="category"
+                                value={formData.category}
+                                onChange={handleChange}
                                 className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
-                focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                required
                             >
                                 <option value="">Kategori Seçin</option>
-                                <option value="matematik">Matematik</option>
-                                <option value="fizik">Fizik</option>
-                                <option value="kimya">Kimya</option>
+                                <option value="MATH">Matematik</option>
+                                <option value="PHYSICS">Fizik</option>
+                                <option value="CHEMISTRY">Kimya</option>
                             </select>
                         </div>
 
@@ -143,13 +288,17 @@ const AddLesson: NextPage = () => {
                                 Zorluk Seviyesi
                             </label>
                             <select
+                                name="difficultyLevel"
+                                value={formData.difficultyLevel}
+                                onChange={handleChange}
                                 className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
-                focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                required
                             >
                                 <option value="">Zorluk Seçin</option>
-                                <option value="beginner">Başlangıç</option>
-                                <option value="intermediate">Orta</option>
-                                <option value="advanced">İleri</option>
+                                <option value="BEGINNER">Başlangıç</option>
+                                <option value="INTERMEDIATE">Orta</option>
+                                <option value="ADVANCED">İleri</option>
                             </select>
                         </div>
 
@@ -160,9 +309,13 @@ const AddLesson: NextPage = () => {
                             </label>
                             <input
                                 type="text"
+                                name="tags"
+                                value={formData.tags}
+                                onChange={handleChange}
                                 placeholder="Etiketleri virgülle ayırın"
                                 className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
-                placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                                required
                             />
                         </div>
                     </div>
@@ -225,10 +378,16 @@ const AddLesson: NextPage = () => {
                         Ders Açıklaması
                     </label>
                     <textarea
+                        name="description"
+                        value={formData.description}
+                        onChange={handleChange}
                         rows={4}
                         placeholder="Ders hakkında kısa bir açıklama yazın..."
                         className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
-            placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                        placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
+                        required
+                        minLength={10}
+                        maxLength={2000}
                     />
                 </div>
 
@@ -286,14 +445,14 @@ const AddLesson: NextPage = () => {
                                             <input
                                                 type="text"
                                                 value={section.xpPoints}
-                                                onChange={(e) => updateSection(section.id, 'xpPoints', parseInt(e.target.value))}
+                                                onChange={(e) => section.id && updateSection(section.id, 'xpPoints', parseInt(e.target.value))}
                                                 className="w-12 bg-transparent border-none text-white font-nunito focus:outline-none text-right"
                                             />
                                             <span className="text-orange-light font-pixelify text-sm">XP</span>
                                         </div>
                                         <button
                                             type="button"
-                                            onClick={() => removeSection(section.id)}
+                                            onClick={() => section.id && removeSection(section.id)}
                                             className="p-2 text-neutral-400 hover:text-red-500 transition-colors"
                                         >
                                             <Icon icon="pixelarticons:close" className="w-5 h-5" />
@@ -306,8 +465,10 @@ const AddLesson: NextPage = () => {
                                         <input
                                             type="text"
                                             value={section.title}
-                                            onChange={(e) => updateSection(section.id, 'title', e.target.value)}
+                                            onChange={(e) => section.id && updateSection(section.id, 'title', e.target.value)}
                                             placeholder="Bölüm Başlığı"
+                                            minLength={3}
+                                            maxLength={100}
                                             className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
                                             placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
                                         />
@@ -315,8 +476,10 @@ const AddLesson: NextPage = () => {
                                     <div>
                                         <textarea
                                             value={section.description}
-                                            onChange={(e) => updateSection(section.id, 'description', e.target.value)}
+                                            onChange={(e) => section.id && updateSection(section.id, 'description', e.target.value)}
                                             placeholder="Bölüm hakkında kısa bir açıklama yazın..."
+                                            minLength={10}
+                                            maxLength={1000}
                                             rows={2}
                                             className="w-full px-4 py-3 bg-dark border border-neutral-600 bg-gray text-white font-nunito
                                             placeholder:text-neutral-400 focus:border-orange-primary focus:ring-1 focus:ring-orange-primary focus:outline-none"
@@ -351,8 +514,12 @@ const AddLesson: NextPage = () => {
                     >
                         İptal
                     </Button>
-                    <Button>
-                        Dersi Yayınla
+                    <Button
+                        type="submit"
+                        disabled={loading}
+                        icon={loading ? "pixelarticons:clock" : "pixelarticons:check"}
+                    >
+                        {loading ? 'Yayınlanıyor...' : 'Dersi Yayınla'}
                     </Button>
                 </div>
             </form>

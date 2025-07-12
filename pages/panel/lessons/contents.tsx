@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Icon } from '@iconify/react'
 import type { NextPage } from 'next'
 import { Button } from '@/components/ui/button'
@@ -33,48 +33,59 @@ interface Section {
     xpPoints: number
 }
 
-// Mock data
-const mockLessons: Lesson[] = [
-    {
-        id: '1',
-        title: 'Matematik 101: Temel Kavramlar',
-        description: 'Temel matematik kavramlarının anlatıldığı giriş dersi.',
-        category: 'Matematik',
-        difficulty: 'Başlangıç',
-        status: 'published',
-        createdAt: '2025-06-30',
-        updatedAt: '2025-06-30',
-        sections: [
-            {
-                id: '1',
-                title: 'Sayılar ve Sayı Sistemleri',
-                description: 'Doğal sayılar, tam sayılar ve rasyonel sayılar.',
-                xpPoints: 1000
-            },
-            {
-                id: '2',
-                title: 'Temel İşlemler',
-                description: 'Toplama, çıkarma, çarpma ve bölme işlemleri.',
-                xpPoints: 800
-            },
-            {
-                id: '3',
-                title: 'Üslü Sayılar',
-                description: 'Üslü sayıların özellikleri ve işlemleri.',
-                xpPoints: 1200
-            }
-        ]
-    }
-]
-
 const LessonContents: NextPage = () => {
-    const [lessons] = useState<Lesson[]>(mockLessons)
+    const [lessons, setLessons] = useState<Lesson[]>([])
     const [selectedLesson, setSelectedLesson] = useState<Lesson | null>(null)
     const [selectedSection, setSelectedSection] = useState<string | null>(null)
     const [isModalOpen, setIsModalOpen] = useState(false)
     const [editContent, setEditContent] = useState('')
     const [sectionContents, setSectionContents] = useState<SectionContent[]>([])
     const [isPreview, setIsPreview] = useState(false)
+    const [loading, setLoading] = useState(false)
+
+    // Dersleri getir
+    useEffect(() => {
+        const fetchLessons = async () => {
+            setLoading(true)
+            try {
+                const userStr = localStorage.getItem('user')
+                if (!userStr) return
+                const user = JSON.parse(userStr)
+                const userId = user._id
+                const res = await fetch(`http://localhost:3000/api/lessons/teacher/${userId}`)
+                const data = await res.json()
+                if (data.lessons) {
+                    setLessons(data.lessons)
+                }
+            } catch (err) {
+                // Hata yönetimi
+                setLessons([])
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (!selectedLesson) fetchLessons()
+    }, [selectedLesson])
+
+    // Seçili dersi getir
+    useEffect(() => {
+        const fetchLesson = async () => {
+            if (!selectedLesson) return
+            setLoading(true)
+            try {
+                const res = await fetch(`http://localhost:3000/api/lessons/${selectedLesson.id}`)
+                const data = await res.json()
+                if (data.lesson) {
+                    setSelectedLesson(data.lesson)
+                }
+            } catch (err) {
+                // Hata yönetimi
+            } finally {
+                setLoading(false)
+            }
+        }
+        if (selectedLesson) fetchLesson()
+    }, [selectedLesson])
 
     const handleSectionClick = (sectionId: string) => {
         const existingContent = sectionContents.find(sc => sc.id === sectionId)
@@ -164,122 +175,128 @@ Dersin özetini buraya yazın...`,
                 <span className="text-white"> İçerikleri</span>
             </h1>
 
-            {!selectedLesson ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {lessons.map((lesson) => (
-                        <div
-                            key={lesson.id}
-                            onClick={() => setSelectedLesson(lesson)}
-                            className="bg-dark-800 border border-neutral-600 p-6 rounded-lg hover:border-orange-primary/50 transition-colors cursor-pointer group"
-                        >
-                            <div className="flex items-center justify-between mb-4">
-                                <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm rounded">
-                                    <span className="text-neutral-400">ID: </span>
-                                    <span className="text-orange-light">#{lesson.id}</span>
-                                </span>
-                                <div className="flex items-center gap-2">
-                                    <span className={`px-2 py-1 text-xs rounded ${lesson.status === 'published'
-                                        ? 'bg-green-500/20 text-green-500'
-                                        : 'bg-yellow-500/20 text-yellow-500'
-                                        }`}>
-                                        {lesson.status === 'published' ? 'Yayında' : 'Taslak'}
-                                    </span>
-                                </div>
-                            </div>
-
-                            <h3 className="text-xl text-white font-pixelify mb-2 group-hover:text-orange-light transition-colors">
-                                {lesson.title}
-                            </h3>
-                            <p className="text-neutral-400 text-sm mb-4">
-                                {lesson.description}
-                            </p>
-
-                            <div className="flex items-center gap-4 mb-4">
-                                <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
-                                    <span className="text-neutral-400">Kategori: </span>
-                                    <span className="text-orange-light">{lesson.category}</span>
-                                </span>
-                                <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
-                                    <span className="text-neutral-400">Zorluk: </span>
-                                    <span className="text-orange-light">{lesson.difficulty}</span>
-                                </span>
-                            </div>
-
-                            <div className="flex items-center justify-between text-sm text-neutral-400">
-                                <span>
-                                    Oluşturulma: {new Date(lesson.createdAt).toLocaleDateString('tr-TR')}
-                                </span>
-                                <Icon
-                                    icon="pixelarticons:arrow-right"
-                                    className="w-5 h-5 text-neutral-400 group-hover:text-orange-light transition-colors"
-                                />
-                            </div>
-                        </div>
-                    ))}
+            {loading ? (
+                <div className="flex flex-col items-center justify-center py-12">
+                    <Icon icon="eos-icons:loading" className="w-8 h-8 animate-spin text-orange-light mx-auto mb-4" />
+                    <p className="text-neutral-400">Yükleniyor...</p>
                 </div>
             ) : (
-                <>
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <button
-                                onClick={() => setSelectedLesson(null)}
-                                className="flex items-center gap-2 text-neutral-400 hover:text-white mb-4"
-                            >
-                                <Icon icon="pixelarticons:arrow-left" className="w-5 h-5" />
-                                <span>Geri Dön</span>
-                            </button>
-                            <h2 className="text-3xl font-pixelify">
-                                <span className="text-orange-light">{selectedLesson.title}</span>
-                            </h2>
-                        </div>
-                        <Button
-                            variant="outline"
-                            onClick={() => setIsPreview(!isPreview)}
-                            icon={isPreview ? 'pixelarticons:edit' : 'pixelarticons:eye'}
-                        >
-                            {isPreview ? 'Düzenle' : 'Önizle'}
-                        </Button>
-                    </div>
-
+                !selectedLesson ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {selectedLesson.sections.map((section) => (
+                        {lessons.map((lesson) => (
                             <div
-                                key={section.id}
-                                className="bg-dark-800 border border-neutral-600 p-6 rounded-lg hover:border-orange-primary/50 transition-colors cursor-pointer"
-                                onClick={() => !isPreview && handleSectionClick(section.id)}
+                                key={lesson.id}
+                                onClick={() => setSelectedLesson(lesson)}
+                                className="bg-dark-800 border border-neutral-600 p-6 rounded-lg hover:border-orange-primary/50 transition-colors cursor-pointer group"
                             >
                                 <div className="flex items-center justify-between mb-4">
-                                    <span className="font-pixelify text-orange-light">
-                                        {section.xpPoints} XP
+                                    <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm rounded">
+                                        <span className="text-neutral-400">ID: </span>
+                                        <span className="text-orange-light">#{lesson.id}</span>
                                     </span>
-                                    {getSectionContent(section.id) ? (
-                                        <span className="text-green-500 flex items-center gap-2">
-                                            <Icon icon="pixelarticons:check" />
-                                            <span className="text-sm">İçerik Girildi</span>
+                                    <div className="flex items-center gap-2">
+                                        <span className={`px-2 py-1 text-xs rounded ${lesson.status === 'published'
+                                            ? 'bg-green-500/20 text-green-500'
+                                            : 'bg-yellow-500/20 text-yellow-500'
+                                            }`}>
+                                            {lesson.status === 'published' ? 'Yayında' : 'Taslak'}
                                         </span>
-                                    ) : (
-                                        <span className="text-yellow-500 flex items-center gap-2">
-                                            <Icon icon="pixelarticons:file-plus" />
-                                            <span className="text-sm">İçerik Bekleniyor</span>
-                                        </span>
-                                    )}
-                                </div>
-                                <h3 className="text-xl text-white font-pixelify mb-2">{section.title}</h3>
-                                <p className="text-neutral-400 text-sm mb-4">{section.description}</p>
-
-                                {isPreview && getSectionContent(section.id) && (
-                                    <div className="mt-4 border-t border-neutral-600 pt-4">
-                                        <div className="md-content">
-                                            <ReactMarkdown>{getSectionContent(section.id)}</ReactMarkdown>
-                                        </div>
                                     </div>
-                                )}
+                                </div>
+
+                                <h3 className="text-xl text-white font-pixelify mb-2 group-hover:text-orange-light transition-colors">
+                                    {lesson.title}
+                                </h3>
+                                <p className="text-neutral-400 text-sm mb-4">
+                                    {lesson.description}
+                                </p>
+
+                                <div className="flex items-center gap-4 mb-4">
+                                    <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
+                                        <span className="text-neutral-400">Kategori: </span>
+                                        <span className="text-orange-light">{lesson.category}</span>
+                                    </span>
+                                    <span className="px-3 py-1 bg-dark border border-neutral-600 text-sm">
+                                        <span className="text-neutral-400">Zorluk: </span>
+                                        <span className="text-orange-light">{lesson.difficulty}</span>
+                                    </span>
+                                </div>
+
+                                <div className="flex items-center justify-between text-sm text-neutral-400">
+                                    <span>
+                                        Oluşturulma: {new Date(lesson.createdAt).toLocaleDateString('tr-TR')}
+                                    </span>
+                                    <Icon
+                                        icon="pixelarticons:arrow-right"
+                                        className="w-5 h-5 text-neutral-400 group-hover:text-orange-light transition-colors"
+                                    />
+                                </div>
                             </div>
                         ))}
                     </div>
-                </>
-            )}
+                ) : (
+                    <>
+                        <div className="flex justify-between items-center mb-8">
+                            <div>
+                                <button
+                                    onClick={() => setSelectedLesson(null)}
+                                    className="flex items-center gap-2 text-neutral-400 hover:text-white mb-4"
+                                >
+                                    <Icon icon="pixelarticons:arrow-left" className="w-5 h-5" />
+                                    <span>Geri Dön</span>
+                                </button>
+                                <h2 className="text-3xl font-pixelify">
+                                    <span className="text-orange-light">{selectedLesson.title}</span>
+                                </h2>
+                            </div>
+                            <Button
+                                variant="outline"
+                                onClick={() => setIsPreview(!isPreview)}
+                                icon={isPreview ? 'pixelarticons:edit' : 'pixelarticons:eye'}
+                            >
+                                {isPreview ? 'Düzenle' : 'Önizle'}
+                            </Button>
+                        </div>
 
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {selectedLesson.sections.map((section) => (
+                                <div
+                                    key={section.id}
+                                    className="bg-dark-800 border border-neutral-600 p-6 rounded-lg hover:border-orange-primary/50 transition-colors cursor-pointer"
+                                    onClick={() => !isPreview && handleSectionClick(section.id)}
+                                >
+                                    <div className="flex items-center justify-between mb-4">
+                                        <span className="font-pixelify text-orange-light">
+                                            {section.xpPoints} XP
+                                        </span>
+                                        {getSectionContent(section.id) ? (
+                                            <span className="text-green-500 flex items-center gap-2">
+                                                <Icon icon="pixelarticons:check" />
+                                                <span className="text-sm">İçerik Girildi</span>
+                                            </span>
+                                        ) : (
+                                            <span className="text-yellow-500 flex items-center gap-2">
+                                                <Icon icon="pixelarticons:file-plus" />
+                                                <span className="text-sm">İçerik Bekleniyor</span>
+                                            </span>
+                                        )}
+                                    </div>
+                                    <h3 className="text-xl text-white font-pixelify mb-2">{section.title}</h3>
+                                    <p className="text-neutral-400 text-sm mb-4">{section.description}</p>
+
+                                    {isPreview && getSectionContent(section.id) && (
+                                        <div className="mt-4 border-t border-neutral-600 pt-4">
+                                            <div className="md-content">
+                                                <ReactMarkdown>{getSectionContent(section.id)}</ReactMarkdown>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            ))}
+                        </div>
+                    </>
+                )
+            )}
             {/* Content Editor Modal */}
             {isModalOpen && selectedSection && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
